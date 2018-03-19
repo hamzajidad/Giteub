@@ -18,7 +18,9 @@ public class MonJoueur extends jeu.Joueur {
     // action
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
-        return super.faitUneAction(etatDuJeu);
+        return Action.RIEN;
+        //return super.faitUneAction(etatDuJeu);
+
     }
     //commentaire
     @Override
