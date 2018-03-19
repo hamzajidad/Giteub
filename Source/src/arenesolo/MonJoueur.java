@@ -60,6 +60,7 @@ public class MonJoueur extends jeu.Joueur {
                 }
                 // tourne a droite
                 dirIndex = (dirIndex + 1) % 4;
+
             }
             // incrementer le nombre de pas a faire
             stepToDo++;
@@ -121,4 +122,11 @@ public class MonJoueur extends jeu.Joueur {
         etatDuJeu.donneContenuCellule(p);
     }
     */
-}
+
+    /**
+     *partie test case
+     */
+    protected boolean caseAEvité(Plateau lePlateau ,Point p) {
+        int [] départ = {lePlateau.ENDROIT_DEPART_J1,lePlateau.ENDROIT_DEPART_J2,lePlateau.ENDROIT_DEPART_J3,lePlateau.ENDROIT_DEPART_J4};
+        if((etatDuJeu.donneContenuCellule(p.x,p.y) && ENDROIT_DEPART_J2)
+    }

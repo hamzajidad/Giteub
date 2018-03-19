@@ -2,12 +2,11 @@
  * Programme minimal pour lancer une partie en solo avec son propre joueur.
  */
 package arenesolo;
+import java.awt.Point;
 
 import jeu.Plateau;
 import jeu.MaitreDuJeu;
 import gui.FenetreDeJeu;
-
-import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public class AreneSolo {
         /* */
 
 
-        EventQueue.invokeLater(() -> { f.setVisible(true); });
+        java.awt.EventQueue.invokeLater(() -> { f.setVisible(true); });
     }
 
 }
