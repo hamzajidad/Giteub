@@ -15,6 +15,7 @@ public class MonJoueur extends jeu.Joueur {
         // initialisation des algorithms, etc...
     }
 
+    // action
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
         return super.faitUneAction(etatDuJeu);
