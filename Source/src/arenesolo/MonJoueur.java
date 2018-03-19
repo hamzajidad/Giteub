@@ -13,8 +13,16 @@ public class MonJoueur extends jeu.Joueur {
 
     ArrayList<Point> sitesPossedes = new ArrayList<Point>();
 
+    /**
+     *  decrit le nom du joueur
+     * @param nom
+     */
     public MonJoueur(String nom) { super(nom); }
 
+    /**
+     * decrit la couleur du joueur pour etre distingué des 3 autres
+     * @param couleur
+     */
     @Override
     protected void debutDePartie(int couleur) {
         System.out.println("La partie commence, je suis le joueur " + couleur + ".");
@@ -23,7 +31,7 @@ public class MonJoueur extends jeu.Joueur {
 
     /**
      * Parcours en spirale
-     *
+     * le parcours en spirale pour decrire autour d'un point fixe (Point p) les objectives les plus proches.
      * @param x0 position X initiale
      * @param y0 position Y initiale
      * @param distanceMax distance a parcourir
@@ -70,6 +78,14 @@ public class MonJoueur extends jeu.Joueur {
             stepToDo++;
         }
     }
+
+    /**
+     *
+     * @param etatDuJeu l'etat du jeu en cours
+     * @param destination la destination du joueur selectionné
+     * @param depart la position du départ
+     * @return
+     */
     public Action prochaineDirectionVers(Plateau etatDuJeu, Point destination, Point depart){
         ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination,depart);
         Node nextpos;
@@ -105,6 +121,12 @@ public class MonJoueur extends jeu.Joueur {
     }
 
     // action
+
+    /**
+     *
+     * @param etatDuJeu
+     * @return
+     */
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
 
