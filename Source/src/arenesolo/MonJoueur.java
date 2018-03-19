@@ -20,7 +20,7 @@ public class MonJoueur extends jeu.Joueur {
     public Action faitUneAction(Plateau etatDuJeu) {
         return super.faitUneAction(etatDuJeu);
     }
-
+    //commentaire
     @Override
     protected void finDePartie(String lePlateau) {
         System.out.println("La partie est finie.");
