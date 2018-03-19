@@ -26,7 +26,7 @@ public class MonJoueur extends jeu.Joueur {
      * @param y0 position Y initiale
      * @param distanceMax distance a parcourir
      */
-    Point move(Plateau etatdujeu, Point p, int distanceMax, Integer objectif) {
+    Point TrouveTempleLePlusProche(Plateau etatdujeu, Point p, int distanceMax, Integer objectif) {
         int x0=p.x;
         int y0=p.y;
         System.out.println("current position = "+String.valueOf(x0)+" "+String.valueOf(y0));
@@ -72,7 +72,7 @@ public class MonJoueur extends jeu.Joueur {
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
         Point currentposition=this.donnePosition();
-        Point destination = move(etatDuJeu, currentposition,110, 65536);
+        Point destination = TrouveTempleLePlusProche(etatDuJeu, currentposition,110, 65536);
         System.out.println(" destination = "+destination.toString());
         prochaineDirectionVers(etatDuJeu, destination, currentposition );
 

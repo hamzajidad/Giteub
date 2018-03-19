@@ -6,7 +6,8 @@ package arenesolo;
 import jeu.Plateau;
 import jeu.MaitreDuJeu;
 import gui.FenetreDeJeu;
-import java.awt.Point;
+
+import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.util.ArrayList;
@@ -63,7 +64,7 @@ public class AreneSolo {
         /* */
 
 
-        java.awt.EventQueue.invokeLater(() -> { f.setVisible(true); });
+        EventQueue.invokeLater(() -> { f.setVisible(true); });
     }
 
 }
