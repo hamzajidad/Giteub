@@ -18,11 +18,11 @@ public class MonJoueur extends jeu.Joueur {
     // action
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
-        return Action.RIEN;
+        return Action;
         //return super.faitUneAction(etatDuJeu);
 
     }
-    //commentaire
+    //commentaries
     @Override
     protected void finDePartie(String lePlateau) {
         System.out.println("La partie est finie.");
