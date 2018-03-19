@@ -71,6 +71,7 @@ public class MonJoueur extends jeu.Joueur {
     //commentaries
     @Override
     protected void finDePartie(String lePlateau) {
+        //testGermain96
         System.out.println("La partie est finie.");
         // destructions des variables, nettoyage, enregistrement des logs et statistiques, etc...
     }
