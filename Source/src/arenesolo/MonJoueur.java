@@ -15,8 +15,6 @@ import jeu.astar.Node;
 import static jeu.Plateau.MASQUE_ENDROIT_SITE2;
 
 public class MonJoueur extends jeu.Joueur {
-    static HashMap<Integer, Point> MAP = new HashMap<Integer, Point>();
-    ArrayList<Point> sitesPossedes = new ArrayList<Point>();
 
     /**
      *  decrit le nom du joueur
@@ -34,6 +32,7 @@ public class MonJoueur extends jeu.Joueur {
         // initialisation des algorithms, etc...
     }
 
+
     /**
      * Parcours en spirale
      * le parcours en spirale pour decrire autour d'un point fixe (Point p) les objectives les plus proches.
@@ -41,15 +40,6 @@ public class MonJoueur extends jeu.Joueur {
      * @param y0 position Y initiale
      * @param distanceMax distance a parcourir
      */
-    public void mappage(Plateau etatDuJeu){
-        Node[][] tab = etatDuJeu.donneGrillePourAstar();
-        for(int y = 0; y<etatDuJeu.donneTaille()/2; y++) {
-            for (int x = 0; x < etatDuJeu.donneTaille() / 2; x++) {
-                MAP.put(etatDuJeu.donneContenuCellule(x,y),new Point(x,y));
-            }
-        }
-    }
-
     static public Point DonnePointObjectifPlusProche(Plateau etatdujeu, Point p, int distanceMax, Integer objectif) {
         //Recherche du temple le plus proche
         int x0=p.x;
@@ -151,10 +141,12 @@ public class MonJoueur extends jeu.Joueur {
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
         //mappage(etatDuJeu);
-
-
-
         Point currentposition=this.donnePosition();
+        HashMap<Integer, ArrayList<Point>> pointsmap = etatDuJeu.cherche(currentposition,9,Plateau.MASQUE_ENDROIT_SITE2);
+        for ( ArrayList<> a:
+             ) {
+            
+        }
         Point destination = DonnePointObjectifPlusProche(etatDuJeu, currentposition,200, 65536); // se diriger vers un temple = 65536
         System.out.println(" destination = "+destination.toString());
 
