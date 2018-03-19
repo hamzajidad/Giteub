@@ -23,6 +23,7 @@ public class MonJoueur extends jeu.Joueur {
     @Override
     protected void finDePartie(String lePlateau) {
         System.out.println("La partie est finie.");
+        System.out.println("cc");
         // destructions des variables, nettoyage, enregistrement des logs et statistiques, etc...
     }
 }
