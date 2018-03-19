@@ -3,6 +3,7 @@
  */
 package arenesolo;
 
+import Thread.Recherche;
 import jeu.Plateau;
 
 import java.awt.*;
@@ -26,7 +27,7 @@ public class MonJoueur extends jeu.Joueur {
      * @param y0 position Y initiale
      * @param distanceMax distance a parcourir
      */
-    Point TrouveTempleLePlusProche(Plateau etatdujeu, Point p, int distanceMax, Integer objectif) {
+    static public Point DonnePointObjectifPlusProche(Plateau etatdujeu, Point p, int distanceMax, Integer objectif) {
         //Recherche du temple le plus proche
         int x0=p.x;
         int y0=p.y;
@@ -66,6 +67,8 @@ public class MonJoueur extends jeu.Joueur {
         }
     }
     public Action prochaineDirectionVers(Plateau etatDuJeu, Point destination, Point depart){
+
+    public void prochaineDirectionVers(Plateau etatDuJeu, Point destination, Point depart){
         ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination,depart);
         Node nextpos;
         if(chemin.size()>1)
@@ -101,10 +104,15 @@ public class MonJoueur extends jeu.Joueur {
     // action
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
+        final int distanceMax = 110;
         Point currentposition=this.donnePosition();
-        Point destination = TrouveTempleLePlusProche(etatDuJeu, currentposition,110, 65536);
+        Point destination = DonnePointObjectifPlusProche(etatDuJeu, currentposition,distanceMax, 65536);
         System.out.println(" destination = "+destination.toString());
-        return prochaineDirectionVers(etatDuJeu, destination, currentposition );
+        prochaineDirectionVers(etatDuJeu, destination, currentposition );
+        Thread.Recherche r = new Recherche(this, this.donneNom(), etatDuJeu, distanceMax, 16384 );
+        r.start();
+        return Action.RIEN;
+        //return super.faitUneAction(etatDuJeu);
 
     }
     //commentaries
