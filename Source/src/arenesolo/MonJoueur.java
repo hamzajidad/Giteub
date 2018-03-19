@@ -65,9 +65,38 @@ public class MonJoueur extends jeu.Joueur {
             stepToDo++;
         }
     }
-    public void prochaineDirectionVers(Plateau etatDuJeu, Point destination, Point depart){
+    public Action prochaineDirectionVers(Plateau etatDuJeu, Point destination, Point depart){
         ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination,depart);
-        System.out.println(chemin.get(chemin.size()-2)); // 6,6
+        Node nextpos;
+        if(chemin.size()>1)
+            nextpos = chemin.get(chemin.size()-2); // 6,6
+        else nextpos= new Node(destination.x,destination.y);
+        System.out.println(" enxt position = "+nextpos.toString());
+        if(nextpos.getPosX()>depart.x){
+            return Action.DROITE;
+        }
+        if(nextpos.getPosX()<depart.x){
+            return Action.GAUCHE;
+        }
+        if(nextpos.getPosX()>depart.y){
+            return Action.BAS;
+        }
+        if(nextpos.getPosX()<depart.y){
+            return Action.HAUT;
+        }
+        else {
+            int j =(int)(Math.random() * 6.0D);
+
+                if(j==1)
+                    return Action.GAUCHE;
+                if(j==2)
+                    return Action.DROITE;
+                if(j==3)
+                    return Action.HAUT;
+                else
+                    return Action.BAS;
+
+        }
     }
     // action
     @Override
@@ -75,11 +104,7 @@ public class MonJoueur extends jeu.Joueur {
         Point currentposition=this.donnePosition();
         Point destination = TrouveTempleLePlusProche(etatDuJeu, currentposition,110, 65536);
         System.out.println(" destination = "+destination.toString());
-        prochaineDirectionVers(etatDuJeu, destination, currentposition );
-
-
-        return Action.RIEN;
-        //return super.faitUneAction(etatDuJeu);
+        return prochaineDirectionVers(etatDuJeu, destination, currentposition );
 
     }
     //commentaries
