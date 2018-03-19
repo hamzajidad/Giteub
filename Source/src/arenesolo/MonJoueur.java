@@ -124,8 +124,8 @@ public class MonJoueur extends jeu.Joueur {
 
     /**
      *
-     * @param etatDuJeu
-     * @return
+     * @param etatDuJeu  on a en parametre l'état du jeu
+     * @return ça retourne l'action en cours RIEN, GAUCHE, DROITE, HAUT, BAS
      */
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
@@ -139,6 +139,15 @@ public class MonJoueur extends jeu.Joueur {
         return prochaineDirectionVers(etatDuJeu, destination, currentposition );
     }
     //commentaries
+
+    /**
+     *
+     * @param lePlateau
+     *  Le Plateau est donnée en chaine de caractère en paramétre
+     * la findepartie c'est quand le nombre maximum de tours est réalisé.
+     *                   // Exception: Si deux joueurs ont le même nombre de points de notoriété, il n'y a pas de gagnant.
+     */
+
     @Override
     protected void finDePartie(String lePlateau) {
         //testGermain96
