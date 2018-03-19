@@ -24,7 +24,7 @@ public class MonJoueur extends jeu.Joueur {
      * @param y0 position Y initiale
      * @param distanceMax distance a parcourir
      */
-    void move(Plateau etatdujeu, Point p, int distanceMax) {
+    Point move(Plateau etatdujeu, Point p, int distanceMax) {
         int x0=p.x;
         int y0=p.y;
         System.out.println("current position = "+String.valueOf(x0)+" "+String.valueOf(y0));
@@ -46,11 +46,14 @@ public class MonJoueur extends jeu.Joueur {
                 for (int j = 0; j < stepToDo; j++) {
                     // condition de sortie
                     distance++;
-                    if(distance>distanceMax) return;
+                    if(distance>distanceMax) return null;
                     // déplacement
                     x+=dx[dirIndex];
                     y+=dy[dirIndex];
-                    System.out.println("Current position: " +x+","+y+" distance="+distance+" contenu = "+etatdujeu.donneContenuCellule(x,y));
+                    //System.out.println("Current position: " +x+","+y+" distance="+distance+" contenu = "+etatdujeu.donneContenuCellule(x,y));
+                    if(etatdujeu.donneContenuCellule(x,y)==65536){
+                        return new Point(x,y);
+                    }
                 }
                 // tourne a droite
                 dirIndex = (dirIndex + 1) % 4;
@@ -63,7 +66,8 @@ public class MonJoueur extends jeu.Joueur {
     // action
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
-        move(etatDuJeu, this.donnePosition(),16);
+        Point p = move(etatDuJeu, this.donnePosition(),110);
+        System.out.println(" destination = "+p.toString());
         return Action.RIEN;
         //return super.faitUneAction(etatDuJeu);
 
