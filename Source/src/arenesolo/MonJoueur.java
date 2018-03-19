@@ -27,7 +27,7 @@ public class MonJoueur extends jeu.Joueur {
         Point positionActuelle = this.donnePosition();
         Integer soldeActuel = this.donneSolde();
         Integer notorieteActuelle =this.donnePointsNotoriete();
-
+        this.c
         if(i==1){
             i=0;
             return Action.BAS;
