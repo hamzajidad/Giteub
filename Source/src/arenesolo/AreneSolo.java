@@ -16,9 +16,17 @@ import jeu.astar.Node;
 public class AreneSolo {
 
     public static void main(String[] args) {
-        Plateau p = new Plateau( 10, MaitreDuJeu.PLATEAU_PAR_DEFAUT);
+        Plateau p = new Plateau( 1200, MaitreDuJeu.PLATEAU_PAR_DEFAUT);
+
         MaitreDuJeu jeu = new MaitreDuJeu(p);
         jeu.metJoueurEnPosition(0, new MonJoueur("Moi"));
+        /*
+        jeu.metJoueurEnPosition(1, new MonJoueur("Moi2"));
+
+        jeu.metJoueurEnPosition(2, new MonJoueur("Moi3"));
+
+        jeu.metJoueurEnPosition(3, new MonJoueur("Moi4"));
+        */
         FenetreDeJeu f = new FenetreDeJeu(jeu, true);
 
         f.addWindowListener( new WindowListener() {
