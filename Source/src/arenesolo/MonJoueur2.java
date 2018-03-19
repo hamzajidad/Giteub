@@ -28,7 +28,6 @@ public class MonJoueur2 extends jeu.Joueur {
     @Override
     protected void debutDePartie(int couleur) {
         POSITION_DEPART =this.donnePosition();
-        NUMERO_JOUEUR=couleur;
         System.out.println("La partie commence, je suis le joueur " + couleur + ".");
 
 
@@ -74,6 +73,8 @@ public class MonJoueur2 extends jeu.Joueur {
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
             Point currentposition = this.donnePosition();
+            NUMERO_JOUEUR=1;
+            System.out.println(this.donneCouleur());
 
             if (currentposition==POSITION_DEPART){          // si on est retourné au départ - donc mort on recherche des sites
                 NBsites=0;
