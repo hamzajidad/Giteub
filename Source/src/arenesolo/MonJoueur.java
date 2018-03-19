@@ -6,6 +6,8 @@ package arenesolo;
 import jeu.Plateau;
 
 import java.awt.*;
+import java.util.ArrayList;
+import jeu.astar.Node;
 
 public class MonJoueur extends jeu.Joueur {
 
@@ -24,7 +26,7 @@ public class MonJoueur extends jeu.Joueur {
      * @param y0 position Y initiale
      * @param distanceMax distance a parcourir
      */
-    Point move(Plateau etatdujeu, Point p, int distanceMax) {
+    Point move(Plateau etatdujeu, Point p, int distanceMax, Integer objectif) {
         int x0=p.x;
         int y0=p.y;
         System.out.println("current position = "+String.valueOf(x0)+" "+String.valueOf(y0));
@@ -51,7 +53,7 @@ public class MonJoueur extends jeu.Joueur {
                     x+=dx[dirIndex];
                     y+=dy[dirIndex];
                     //System.out.println("Current position: " +x+","+y+" distance="+distance+" contenu = "+etatdujeu.donneContenuCellule(x,y));
-                    if(etatdujeu.donneContenuCellule(x,y)==65536){
+                    if(etatdujeu.donneContenuCellule(x,y)==objectif){
                         return new Point(x,y);
                     }
                 }
@@ -62,12 +64,19 @@ public class MonJoueur extends jeu.Joueur {
             stepToDo++;
         }
     }
-
+    public void prochaineDirectionVers(Plateau etatDuJeu, Point destination, Point depart){
+        ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination,depart);
+        System.out.println(chemin.get(chemin.size()-2)); // 6,6
+    }
     // action
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
-        Point p = move(etatDuJeu, this.donnePosition(),110);
-        System.out.println(" destination = "+p.toString());
+        Point currentposition=this.donnePosition();
+        Point destination = move(etatDuJeu, currentposition,110, 65536);
+        System.out.println(" destination = "+destination.toString());
+        prochaineDirectionVers(etatDuJeu, destination, currentposition );
+
+
         return Action.RIEN;
         //return super.faitUneAction(etatDuJeu);
 
