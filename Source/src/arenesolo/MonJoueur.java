@@ -15,11 +15,14 @@ public class MonJoueur extends jeu.Joueur {
         // initialisation des algorithms, etc...
     }
 
+    // action
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
-        return super.faitUneAction(etatDuJeu);
-    }
+        return Action.RIEN;
+        //return super.faitUneAction(etatDuJeu);
 
+    }
+    //commentaire
     @Override
     protected void finDePartie(String lePlateau) {
         System.out.println("La partie est finie.");
