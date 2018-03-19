@@ -27,6 +27,7 @@ public class MonJoueur extends jeu.Joueur {
      * @param distanceMax distance a parcourir
      */
     Point TrouveTempleLePlusProche(Plateau etatdujeu, Point p, int distanceMax, Integer objectif) {
+        //Recherche du temple le plus proche
         int x0=p.x;
         int y0=p.y;
         System.out.println("current position = "+String.valueOf(x0)+" "+String.valueOf(y0));
