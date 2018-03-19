@@ -3,7 +3,6 @@
  */
 package arenesolo;
 
-import Thread.Recherche;
 import jeu.Plateau;
 
 import java.awt.*;
@@ -11,6 +10,8 @@ import java.util.ArrayList;
 import jeu.astar.Node;
 
 public class MonJoueur extends jeu.Joueur {
+
+    ArrayList<Point> sitesPossedes = new ArrayList<Point>();
 
     public MonJoueur(String nom) { super(nom); }
 
@@ -55,8 +56,11 @@ public class MonJoueur extends jeu.Joueur {
                     x+=dx[dirIndex];
                     y+=dy[dirIndex];
                     //System.out.println("Current position: " +x+","+y+" distance="+distance+" contenu = "+etatdujeu.donneContenuCellule(x,y));
-                    if(etatdujeu.donneContenuCellule(x,y)==objectif){
-                        return new Point(x,y);
+                    int contenu=etatdujeu.donneContenuCellule(x,y);
+                    if(contenu==objectif){
+                        if(Plateau.donneProprietaireDuSite(contenu)!=16384) {
+                            return new Point(x, y);
+                        }
                     }
                 }
                 // tourne a droite
@@ -67,8 +71,6 @@ public class MonJoueur extends jeu.Joueur {
         }
     }
     public Action prochaineDirectionVers(Plateau etatDuJeu, Point destination, Point depart){
-
-    public void prochaineDirectionVers(Plateau etatDuJeu, Point destination, Point depart){
         ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination,depart);
         Node nextpos;
         if(chemin.size()>1)
@@ -101,19 +103,18 @@ public class MonJoueur extends jeu.Joueur {
 
         }
     }
+
     // action
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
-        final int distanceMax = 110;
-        Point currentposition=this.donnePosition();
-        Point destination = DonnePointObjectifPlusProche(etatDuJeu, currentposition,distanceMax, 65536);
-        System.out.println(" destination = "+destination.toString());
-        prochaineDirectionVers(etatDuJeu, destination, currentposition );
-        Thread.Recherche r = new Recherche(this, this.donneNom(), etatDuJeu, distanceMax, 16384 );
-        r.start();
-        return Action.RIEN;
-        //return super.faitUneAction(etatDuJeu);
 
+        Point currentposition=this.donnePosition();
+        Point destination = DonnePointObjectifPlusProche(etatDuJeu, currentposition,110, 65536); // se diriger vers un temple = 65536
+        System.out.println(" destination = "+destination.toString());
+
+
+
+        return prochaineDirectionVers(etatDuJeu, destination, currentposition );
     }
     //commentaries
     @Override
