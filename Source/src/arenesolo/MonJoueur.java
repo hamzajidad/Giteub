@@ -9,6 +9,8 @@ import java.awt.*;
 import java.util.ArrayList;
 import jeu.astar.Node;
 
+import static jeu.Plateau.MASQUE_ENDROIT_SITE2;
+
 public class MonJoueur extends jeu.Joueur {
 
     ArrayList<Point> sitesPossedes = new ArrayList<Point>();
@@ -65,8 +67,14 @@ public class MonJoueur extends jeu.Joueur {
                     y+=dy[dirIndex];
                     //System.out.println("Current position: " +x+","+y+" distance="+distance+" contenu = "+etatdujeu.donneContenuCellule(x,y));
                     int contenu=etatdujeu.donneContenuCellule(x,y);
-                    if(contenu==objectif){
-                        if(Plateau.donneProprietaireDuSite(contenu)!=16384) {
+                    if((contenu & MASQUE_ENDROIT_SITE2) != 0){ // si la case scannee vaut la valeur objectif passée en parametre
+                        /*
+                        if(Plateau.donneProprietaireDuSite(contenu)!=Plateau.PRESENCE_JOUEUR1) {
+                            System.out.println("Valeur du proprietraire "+String.valueOf(Plateau.donneProprietaireDuSite(contenu)));
+                            return new Point(x, y);
+                        }*/
+                        if(Plateau.donneProprietaireDuSite(contenu)!=1) {
+                            System.out.println("Valeur du proprietraire "+String.valueOf(Plateau.donneProprietaireDuSite(contenu)));
                             return new Point(x, y);
                         }
                     }
@@ -92,7 +100,7 @@ public class MonJoueur extends jeu.Joueur {
         if(chemin.size()>1)
             nextpos = chemin.get(chemin.size()-2); // 6,6
         else nextpos= new Node(destination.x,destination.y);
-        System.out.println(" enxt position = "+nextpos.toString());
+        System.out.println(" next position = "+nextpos.toString());
         if(nextpos.getPosX()>depart.x){
             return Action.DROITE;
         }
@@ -131,11 +139,11 @@ public class MonJoueur extends jeu.Joueur {
     public Action faitUneAction(Plateau etatDuJeu) {
 
         Point currentposition=this.donnePosition();
-        Point destination = DonnePointObjectifPlusProche(etatDuJeu, currentposition,110, 65536); // se diriger vers un temple = 65536
+        Point destination = DonnePointObjectifPlusProche(etatDuJeu, currentposition,200, 65536); // se diriger vers un temple = 65536
         System.out.println(" destination = "+destination.toString());
 
 
-
+        System.out.println(Plateau.donneProprietaireDuSite(etatDuJeu.donneContenuCellule(destination)));
         return prochaineDirectionVers(etatDuJeu, destination, currentposition );
     }
     //commentaries
