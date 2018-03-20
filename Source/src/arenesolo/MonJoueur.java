@@ -196,9 +196,52 @@ public class MonJoueur extends jeu.Joueur {
     */
 
     /**
-     *partie test case
+     *partie teste case
      */
-    protected boolean caseAEvité(Plateau lePlateau ,Point p) {
-        int [] départ = {lePlateau.ENDROIT_DEPART_J1,lePlateau.ENDROIT_DEPART_J2,lePlateau.ENDROIT_DEPART_J3,lePlateau.ENDROIT_DEPART_J4};
-        if((etatDuJeu.donneContenuCellule(p.x,p.y) && ENDROIT_DEPART_J2)
+    public boolean estUnPointDepartAdverse(Plateau plateau,Point p) {
+        int contenu = plateau.donneContenuCellule(p);
+        int numProprietairePointDepart = Plateau.donneProprietaireDuPointDeDepart(contenu);
+        int numMonJoueur = this.donneCouleurNumerique()+1;
+        return (numProprietairePointDepart > 0 && numProprietairePointDepart != numMonJoueur);
+    }
+
+    public boolean estUnSiteAdverse(Plateau plateau, Point p) {
+        return Plateau.contientUnSiteQuiNeLuiAppartientPas(this, plateau.donneContenuCellule(p));
+    }
+
+    public boolean estUnSiteImportant(Plateau plateau, Point p) {
+        int contenu = plateau.donneContenuCellule(p);
+        if(!Plateau.contientUnSite(contenu))
+            return false;
+        int typeSite = Plateau.donneTypeSites(contenu);
+        return typeSite == 2;
+    }
+
+    public boolean estUnSiteMoinsImportant(Plateau plateau, Point p) {
+        int contenu = plateau.donneContenuCellule(p);
+        if(!Plateau.contientUnSite(contenu))
+            return false;
+        int typeSite = Plateau.donneTypeSites(contenu);
+        return typeSite == 1;
+    }
+
+    public boolean estUnSiteAbandonne(Plateau plateau, Point p) {
+        int contenu = plateau.donneContenuCellule(p);
+        if(!Plateau.contientUnSite(contenu))
+            return false;
+        return ( ( contenu & Plateau.MASQUE_ENDROIT_SITE1 ) == Plateau.ENDROIT_SITE1_ABANDONNE
+                || ( contenu & Plateau.MASQUE_ENDROIT_SITE2 ) == Plateau.ENDROIT_SITE2_ABANDONNE );
+    }
+
+    public boolean estUnCentreDeFinance(Plateau plateau, Point p) {
+        return Plateau.contientUnPointDeFinancement(plateau.donneContenuCellule(p));
+    }
+
+    public boolean existePresenceAdverse(Plateau plateau, Point p) {
+        Joueur joueur = plateau.donneJoueurEnPosition(p);
+        return( joueur != null && this.equals(joueur) );
+    }
+
+    public boolean aPlusDeNMilliers(Joueur joueur,int n) {
+        return joueur.donneSolde()>n;
     }
