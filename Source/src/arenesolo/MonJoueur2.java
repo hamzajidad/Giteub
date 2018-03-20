@@ -43,7 +43,11 @@ public class MonJoueur2 extends jeu.Joueur {
     public Action chercherTresor(Plateau etatDuJeu, Point currentposition){
         HashMap<Integer, ArrayList<Point>> positionSitesFouille = etatDuJeu.cherche(currentposition, 200, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFouille.get(2);
-
+        for (Point s : sites) {
+            if(!estUnSiteImportant(etatDuJeu, s)){
+                sites.remove(s);
+            }
+        }
         Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
         while (Plateau.donneProprietaireDuSite(etatDuJeu.donneContenuCellule(destination)) == NUMERO_JOUEUR) {
             // si notre joueur est proprietaire du site // testé fonctionne
@@ -183,5 +187,13 @@ public class MonJoueur2 extends jeu.Joueur {
             else
                 return Action.BAS;
         }
+    }
+
+    public boolean estUnSiteImportant(Plateau plateau, Point p) {
+        int contenu = plateau.donneContenuCellule(p);
+        if (!Plateau.contientUnSite(contenu))
+            return false;
+        int typeSite = Plateau.donneTypeSites(contenu);
+        return typeSite == 2;
     }
 }
