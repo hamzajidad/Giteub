@@ -195,4 +195,99 @@ public class MonJoueur3 extends jeu.Joueur {
         int typeSite = Plateau.donneTypeSites(contenu);
         return typeSite == 2;
     }
+    /**
+     *
+     * @param plateau
+     * @param p
+     * @return ça retourne si le Point p sur le Plateau est bien le point du depart d'adversaire ou pas
+     */
+    public boolean estUnPointDepartAdverse(Plateau plateau, Point p) {
+        int contenu = plateau.donneContenuCellule(p);
+        int numProprietairePointDepart = Plateau.donneProprietaireDuPointDeDepart(contenu);
+        int numMonJoueur = this.donneCouleurNumerique() + 1;
+        return (numProprietairePointDepart > 0 && numProprietairePointDepart != numMonJoueur);
+    }
+
+    /**
+     *
+     * @param plateau
+     * @param p
+     * @return Ca vérifie si le site surlequel on est positionné appartient ou pas à un adversaire
+     */
+    public boolean estUnSiteAdverse(Plateau plateau, Point p) {
+        return (  !estUnSiteAbandonne(plateau,p) && Plateau.contientUnSiteQuiNeLuiAppartientPas(this, plateau.donneContenuCellule(p)));
+    }
+
+    /**
+     *
+     * @param plateau
+     * @param p
+     * @return ca retourne un boolean pour savoir si le site est important ou pas
+     */
+    public boolean estUnSiteImportant(Plateau plateau, Point p) {
+        int contenu = plateau.donneContenuCellule(p);
+        if (!Plateau.contientUnSite(contenu))
+            return false;
+        int typeSite = Plateau.donneTypeSites(contenu);
+        return typeSite == 2;
+    }
+
+    /**
+     *
+     * @param plateau
+     * @param p
+     * @return  ça fait le tri des sites moins importants parmi tous les sites
+     */
+    public boolean estUnSiteMoinsImportant(Plateau plateau, Point p) {
+        int contenu = plateau.donneContenuCellule(p);
+        if (!Plateau.contientUnSite(contenu))
+            return false;
+        int typeSite = Plateau.donneTypeSites(contenu);
+        return typeSite == 1;
+    }
+
+    /**
+     *
+     * @param plateau
+     * @param p le point p
+     * @return Ca vérifie si le site est abandoné ou pas
+     */
+    public boolean estUnSiteAbandonne(Plateau plateau, Point p) {
+        int contenu = plateau.donneContenuCellule(p);
+        if (!Plateau.contientUnSite(contenu))
+            return false;
+        return ((contenu & Plateau.MASQUE_ENDROIT_SITE1) == Plateau.ENDROIT_SITE1_ABANDONNE
+                || (contenu & Plateau.MASQUE_ENDROIT_SITE2) == Plateau.ENDROIT_SITE2_ABANDONNE);
+    }
+
+    /**
+     *
+     * @param plateau
+     * @param p
+     * @return Vérifier si le point p sur le plateau est un centre de financement
+     */
+    public boolean estUnCentreDeFinance(Plateau plateau, Point p) {
+        return Plateau.contientUnPointDeFinancement(plateau.donneContenuCellule(p));
+    }
+
+    /**
+     *
+     * @param plateau
+     * @param p
+     * @return vérifier l'existence d'un adversaire sur le plateau au point p
+     */
+    public boolean existePresenceAdverse(Plateau plateau, Point p) {
+        Joueur joueur = plateau.donneJoueurEnPosition(p);
+        return (joueur != null && this.equals(joueur));
+    }
+
+    /**
+     *
+     * @param joueur
+     * @param n
+     * @return
+     */
+    public boolean aPlusDeNMilliers(Joueur joueur, int n) {
+        return joueur.donneSolde() > n;
+    }
 }

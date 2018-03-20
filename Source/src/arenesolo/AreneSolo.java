@@ -23,9 +23,9 @@ public class AreneSolo {
 
         jeu.metJoueurEnPosition(1, new MonJoueur3("Moi2"));
 
-        jeu.metJoueurEnPosition(2, new MonJoueur3("Moi3"));
+        jeu.metJoueurEnPosition(2, new MonJoueur4("Moi3"));
 
-        jeu.metJoueurEnPosition(3, new MonJoueur4("Moi4"));
+        jeu.metJoueurEnPosition(3, new MonJoueur3("Moi4"));
 
         FenetreDeJeu f = new FenetreDeJeu(jeu, true);
 

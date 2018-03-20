@@ -115,6 +115,9 @@ public class MonJoueur2 extends jeu.Joueur {
                 NBsites = 0;
             }
 
+            if (this.donneSolde()<40){
+                a = chercherPognon(etatDuJeu, currentposition);
+            }
             if (NBsites < 2){                //sil il posse moins de deux sites alors il  cherche
                 a = chercherTresor(etatDuJeu, currentposition);
 
@@ -130,6 +133,7 @@ public class MonJoueur2 extends jeu.Joueur {
                 tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
                 tr.setPriority(MAX_PRIORITY); //Mettre en priorité ce thread
             }
+
             tr.start();
             long t1 = System.currentTimeMillis();
             System.out.println("temps :" + (t1 - t));
