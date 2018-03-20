@@ -56,14 +56,14 @@ public class MonJoueur2 extends jeu.Joueur {
             System.out.println(destination);
         }
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
-            NBsites=NBsites+1;
+            NBsites++;
         }
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
     public Action chercherPognon(Plateau etatDuJeu, Point currentposition){
 
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 40, Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
-        ArrayList<Point>  sites = positionSitesFinance.get(2);
+        ArrayList<Point>  sites = positionSitesFinance.get(1);
         Point destination = TrouvePlusProche(currentposition, sites);
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
             //chercherPognon = false;
@@ -99,13 +99,15 @@ public class MonJoueur2 extends jeu.Joueur {
         if(s.equalsIgnoreCase("Jaune")) NUMERO_JOUEUR=4;
     }
 
-    private Point TrouvePlusProche(Point currentposition,ArrayList<Point> points) {
-        Double distance=9999.0;
+    private Point TrouvePlusProche(Plateau etatDuJeu,Point currentposition,ArrayList<Point> points) {
+
+        int distance=9999;
         Point pointProche=null;
         for(Point p : points){
-            if(currentposition.distanceSq(p)<distance){
+
+            if(etatDuJeu.donneCheminEntre(currentposition, p).size()<distance){
                 pointProche=p;
-                distance=currentposition.distanceSq(p); // renvoie c2=a2+b2 // distance de la ligne droite au point
+                distance=etatDuJeu.donneCheminEntre(currentposition, p).size();
             }
         }
         return pointProche;
@@ -136,14 +138,14 @@ public class MonJoueur2 extends jeu.Joueur {
         if(chemin.size()>1)
             nextpos = chemin.get(chemin.size()-2); // 6,6
         else {
-            nextpos = new Node(destination.x, destination.y);
-            destination=null;
-            System.out.println("destination atteinte");
-        }
-        if(nextpos.getPosX()>depart.x){
-            return Action.DROITE;
-        }
-        if(nextpos.getPosX()<depart.x){
+                nextpos = new Node(destination.x, destination.y);
+                destination=null;
+                System.out.println("destination atteinte");
+            }
+            if(nextpos.getPosX()>depart.x){
+                return Action.DROITE;
+            }
+            if(nextpos.getPosX()<depart.x){
             return Action.GAUCHE;
         }
         if(nextpos.getPosX()>depart.y){
