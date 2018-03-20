@@ -40,18 +40,20 @@ public class MonJoueur2 extends jeu.Joueur {
      * @return ça retourne l'action en cours RIEN, GAUCHE, DROITE, HAUT, BAS
      */
     public Action chercherTresor(Plateau etatDuJeu, Point currentposition){
-        HashMap<Integer, ArrayList<Point>> positionSitesFouille = etatDuJeu.cherche(currentposition, 100, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
+        HashMap<Integer, ArrayList<Point>> positionSitesFouille = etatDuJeu.cherche(currentposition, 200, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFouille.get(2);
 
         Point destination = TrouvePlusProche(currentposition, sites);
         while (Plateau.donneProprietaireDuSite(etatDuJeu.donneContenuCellule(destination)) == NUMERO_JOUEUR) {
             // si notre joueur est proprietaire du site // testé fonctionne
             System.out.println("!!!!! je suis proprietaire");
+            System.out.println(destination);
             positionSitesFouille.values().remove(destination);
             sites.removeAll(Collections.singleton(destination));
 
             System.out.println(positionSitesFouille.values());
             destination = TrouvePlusProche(currentposition, sites);
+            System.out.println(destination);
         }
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
             NBsites=NBsites+1;
@@ -72,9 +74,9 @@ public class MonJoueur2 extends jeu.Joueur {
 
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
+        // thread de la mort cloque tout les autres joueurs priority high
             Point currentposition = this.donnePosition();
-            NUMERO_JOUEUR=1;
-            System.out.println(this.donneCouleur());
+            calculeNumeroJoueur(this.donneCouleur()); //calcule le numero du joueur
 
             if (currentposition==POSITION_DEPART){          // si on est retourné au départ - donc mort on recherche des sites
                 NBsites=0;
@@ -88,6 +90,13 @@ public class MonJoueur2 extends jeu.Joueur {
             }
         System.out.println(" DEPLACEMENT RANDOM ");
             return super.faitUneAction(etatDuJeu);
+    }
+
+    private void calculeNumeroJoueur(String s) {
+        if(s.equalsIgnoreCase("Bleu")) NUMERO_JOUEUR=1;
+        if(s.equalsIgnoreCase("Vert")) NUMERO_JOUEUR=2;
+        if(s.equalsIgnoreCase("Rouge")) NUMERO_JOUEUR=3;
+        if(s.equalsIgnoreCase("Jaune")) NUMERO_JOUEUR=4;
     }
 
     private Point TrouvePlusProche(Point currentposition,ArrayList<Point> points) {
