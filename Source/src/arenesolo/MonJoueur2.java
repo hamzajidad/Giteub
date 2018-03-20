@@ -115,6 +115,11 @@ public class MonJoueur2 extends jeu.Joueur {
             if (this.donneSolde()<40){
                 a = chercherPognon(etatDuJeu, currentposition);
             }
+            Point c=caseProcheContient(etatDuJeu,currentposition);
+            if(c!=null){
+                return prochainMouvementVers(etatDuJeu, c, currentposition);
+            }
+
             if (NBsites < 2){                //sil il posse moins de deux sites alors il  cherche
                 a = chercherTresor(etatDuJeu, currentposition);
 
@@ -131,6 +136,43 @@ public class MonJoueur2 extends jeu.Joueur {
             long t1 = System.currentTimeMillis();
             System.out.println("temps :" + (t1 - t));
             return a;
+    }
+
+    private Point caseProcheContient(Plateau etatDuJeu, Point currentposition) {
+        HashMap<Integer, ArrayList<Point>> FouilleProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
+        HashMap<Integer, ArrayList<Point>> JoueurProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
+        HashMap<Integer, ArrayList<Point>> FinanceProches= new HashMap<>();
+        if(this.donneSolde()<85){
+            JoueurProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
+        }
+        ArrayList<Point>  finances = FinanceProches.get(1);
+        ArrayList<Point>  joueurs = JoueurProches.get(4);
+        ArrayList<Point>  fouilles = FouilleProches.get(2);
+        if( finances.size()>0 && joueurs.size()>0 && fouilles.size()>0){
+            if(joueurs.size()>0){
+                for (Point f: fouilles) {
+                    return f;
+                }
+            }
+            if(finances.size()>0){
+                for (Point f: fouilles) {
+                    return f;
+                }
+            }
+            if(fouilles.size()>0){
+                for (Point f: fouilles) {
+                    if(!(Plateau.donneProprietaireDuSite(etatDuJeu.donneContenuCellule(f)) == NUMERO_JOUEUR)){
+                        return f;
+                    }
+                }
+            }
+            return null;
+        }
+        else{
+            return null;
+        }
+
+
     }
 
     private void calculeNumeroJoueur(String s) {

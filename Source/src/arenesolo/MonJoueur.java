@@ -134,7 +134,6 @@ public class MonJoueur extends jeu.Joueur {
 
         }
     }
-
     // action
 
     /**
