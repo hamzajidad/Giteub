@@ -98,7 +98,7 @@ public class MonJoueur4 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * cherche les joueurs possedant des sites et frappe le plus proche
      *
      * @param etatDuJeu
      * @param currentposition
@@ -108,6 +108,7 @@ public class MonJoueur4 extends jeu.Joueur {
 
         HashMap<Integer, ArrayList<Point>> positionsJoueur = etatDuJeu.cherche(currentposition, etatDuJeu.donneTaille(), Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  joueurs = positionsJoueur.get(4);
+        joueurs.remove(this.donnePosition());
         ArrayList<Point>  joueursAvecSite = new ArrayList<Point>();
         for (Point p : joueurs) {
             if (etatDuJeu.nombreDeSites1Joueur(etatDuJeu.donneJoueurEnPosition(p).donneCouleurNumerique()-1) > 0 ){
@@ -126,7 +127,7 @@ public class MonJoueur4 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * Fonction appellée par le maitre du jeu a chaque debut de tour
      *
      * @param etatDuJeu
      * @return
@@ -158,7 +159,7 @@ public class MonJoueur4 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * Calcule le numero du joueur en fonction de son nom
      *
      * @param s
      */
@@ -170,7 +171,7 @@ public class MonJoueur4 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * Choisit le point le plus proche dans une liste de points
      *
      * @param etatDuJeu
      * @param currentposition

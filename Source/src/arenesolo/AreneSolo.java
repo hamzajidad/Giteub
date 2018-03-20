@@ -73,10 +73,7 @@ public class AreneSolo {
         });
         /* */
 
-
-        java.awt.EventQueue.invokeLater(() -> {
-            f.setVisible(true);
-        });
+        java.awt.EventQueue.invokeLater(() -> f.setVisible(true));
     }
 
 }

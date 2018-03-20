@@ -117,10 +117,10 @@ public class MonJoueur extends jeu.Joueur {
         if (nextpos.getPosX() < depart.x) {
             return Action.GAUCHE;
         }
-        if (nextpos.getPosX() > depart.y) {
+        if (nextpos.getPosY() > depart.y) {
             return Action.BAS;
         }
-        if (nextpos.getPosX() < depart.y) {
+        if (nextpos.getPosY() < depart.y) {
             return Action.HAUT;
         } else {
             int j = (int) (Math.random() * 6.0D);

@@ -66,13 +66,13 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * fonction utilisée lorsque le joueur cherche un tresor
      *
      * @param etatDuJeu on a en parametre l'état du jeu
      * @return ça retourne l'action en cours RIEN, GAUCHE, DROITE, HAUT, BAS
      */
     private Action chercherTresor(Plateau etatDuJeu, Point currentposition) {
-        HashMap<Integer, ArrayList<Point>> positionSitesFouille = etatDuJeu.cherche(currentposition, 50, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
+        HashMap<Integer, ArrayList<Point>> positionSitesFouille = etatDuJeu.cherche(currentposition, etatDuJeu.donneTaille(), Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point> sites = positionSitesFouille.get(2);
         ArrayList<Point> sitesImportants = new ArrayList<>();
         for (Point s : sites) {
@@ -82,7 +82,6 @@ public class MonJoueur2 extends jeu.Joueur {
         }
         Point destination = TrouvePlusProche(etatDuJeu, currentposition, sitesImportants);
         while (Plateau.donneProprietaireDuSite(etatDuJeu.donneContenuCellule(destination)) == NUMERO_JOUEUR) { // si notre joueur est proprietaire du site // testé fonctionne
-            System.out.println("!!!!! je suis deja proprietaire de " + destination);
             positionSitesFouille.values().remove(destination);
             sitesImportants.removeAll(Collections.singleton(destination));
             destination = TrouvePlusProche(etatDuJeu, currentposition, sitesImportants);
@@ -95,14 +94,14 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * fonction utilisée lorsque le joueur cherche du pognon
      *
      * @param etatDuJeu
      * @param currentposition
      * @return
      */
     private Action chercherPognon(Plateau etatDuJeu, Point currentposition) {
-        HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 20, Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
+        HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, etatDuJeu.donneTaille(), Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point> sites = positionSitesFinance.get(1);
         Point destination = TrouvePlusProche(etatDuJeu, currentposition, sites);
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
@@ -112,27 +111,32 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * fonction utilisée lorsque le joueur cherche de la bagarre
      *
      * @param etatDuJeu
      * @param currentposition
      * @return
      */
     private Action chercherBagarre(Plateau etatDuJeu, Point currentposition) {
+        System.out.println("Je cherche la bagarre");
         HashMap<Integer, ArrayList<Point>> positionsJoueur = etatDuJeu.cherche(currentposition, etatDuJeu.donneTaille(), Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  joueurs = positionsJoueur.get(4);
-        joueurs.remove(this.donnePosition());
-        ArrayList<Point>  joueursAvecSite = new ArrayList<Point>();
+        System.out.println(joueurs.remove(this.donnePosition()));
+        ArrayList<Point>  joueursAvecSite = new ArrayList<>();
         for (Point p : joueurs) {
             if (etatDuJeu.nombreDeSites1Joueur(etatDuJeu.donneJoueurEnPosition(p).donneCouleurNumerique()-1) > 0 ){
                 joueursAvecSite.add(p);
             }
         }
+        Point destination;
+        if(joueursAvecSite.size()>0) {
+             destination= TrouvePlusProche(etatDuJeu, currentposition, joueursAvecSite);
+        }
+        else{
+            destination= TrouvePlusProche(etatDuJeu, currentposition, joueurs);
+        }
 
-        System.out.println("\"------------------->JOUEUR 4: Joueur Supprime:"+joueurs.remove(currentposition) );
-        Point destination = TrouvePlusProche(etatDuJeu,currentposition, joueursAvecSite);
-
-        System.out.println("------------------->JOUEUR 4: Joueur Proche =" + destination);
+        System.out.println("------------------->MOI: Joueur Proche = " + destination);
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
             System.out.println("Bagarre trouvé");
         }
@@ -167,8 +171,8 @@ public class MonJoueur2 extends jeu.Joueur {
             tr.stop(); //deprecated
         }
         if(tourDepart == 0) {
-            //tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
-            //tr.setPriority(MAX_PRIORITY);
+            tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
+            tr.setPriority(MAX_PRIORITY);
             System.out.println("Tour de départ !!!!");
             POSITION_DEPART = this.donnePosition();
             calculeNumeroJoueur(this.donneCouleur());
@@ -177,7 +181,6 @@ public class MonJoueur2 extends jeu.Joueur {
 
         // thread de la mort cloque tout les autres joueurs priority high
         Point currentposition = this.donnePosition();
-        System.out.println("current position : " + currentposition + ", position départ : " + POSITION_DEPART + " Nb site : " + NBsites); //calcule le numero du joueur
 
         if (currentposition == POSITION_DEPART) {          // si on est retourné au départ - donc mort on recherche des sites
             NBsites = 0;
@@ -187,16 +190,16 @@ public class MonJoueur2 extends jeu.Joueur {
             a = chercherPognon(etatDuJeu, currentposition);
         }
 
-
-        if (NBsites < 3) {                //sil il posse moins de deux sites alors il  cherche
-            a = chercherTresor(etatDuJeu, currentposition);
-        } else {
-
-            a = chercherBagarre(etatDuJeu, currentposition);
-        }
         Action actionAutour = this.chercherCaseAutour(etatDuJeu, currentposition);
         if( actionAutour!= null){
-            a = actionAutour;
+            return actionAutour;
+        }
+
+        if (NBsites < 2) {                //sil il posse moins de deux sites alors il  cherche
+            a = chercherTresor(etatDuJeu, currentposition);
+
+        } else {
+            a = chercherBagarre(etatDuJeu, currentposition);
         }
 
         if (tourDepart != 0) {
@@ -204,16 +207,14 @@ public class MonJoueur2 extends jeu.Joueur {
             tr.setPriority(MAX_PRIORITY); //Mettre en priorité ce thread
         }
 
-       /// tr.start();
+        tr.start();
         long t1 = System.currentTimeMillis();
         System.out.println("temps :" + (t1 - t));
-
         return a;
     }
 
-
     /**
-     * Description fonction ici
+     * cherche si les cases adjacentes contiennent des choses d'interet
      *
      * @param s
      */
@@ -233,9 +234,9 @@ public class MonJoueur2 extends jeu.Joueur {
         joueurs.remove(donnePosition());
         ArrayList<Point>  fouilles = FouilleProches.get(2);
 
-        if( ( this.donneSolde()>40 && finances.size()>0  ) || (joueurs != null && joueurs.size()>0 && this.donneSolde()>40 ) || fouilles.size()>0){
+        if(this.donneSolde() > 40 && finances.size() > 0 || joueurs.size() > 0 && this.donneSolde() > 40 || fouilles.size() > 0){
             if(joueurs.size()>0){
-                int nbSite =0, nbSiteMax = 0;
+                int nbSite, nbSiteMax = 0;
 
                 for (Point p: joueurs) {
                     nbSite = etatDuJeu.nombreDeSites1Joueur(etatDuJeu.donneJoueurEnPosition(p).donneCouleurNumerique()-1)+etatDuJeu.nombreDeSites2Joueur(etatDuJeu.donneJoueurEnPosition(p).donneCouleurNumerique()-1);
@@ -258,11 +259,11 @@ public class MonJoueur2 extends jeu.Joueur {
             }
             if(fouilles.size()>0){
                 for (Point f: fouilles) {
-                    if(this.estUnSiteImportant(etatDuJeu,f)){
+                    int proprio=Plateau.donneProprietaireDuSite(etatDuJeu.donneContenuCellule(f));
+                    if(!(proprio == NUMERO_JOUEUR)) { // si notre joueur est proprietaire du site // testé fonctionne
                         return f;
                     }
                 }
-                return TrouvePlusProche(etatDuJeu,currentposition,fouilles);
             }
             return null;
         }
@@ -279,7 +280,7 @@ public class MonJoueur2 extends jeu.Joueur {
      * @return
      */
     private ArrayList<Point> trouvePointSpawnAdversaire(Plateau etatDuJeu, Point positionJoueurDepart){
-        ArrayList<Point> spawns = new ArrayList<>();
+        ArrayList<Point> spawns;
         HashMap<Integer, ArrayList<Point>> list = etatDuJeu.cherche(positionJoueurDepart, 20, Plateau.CHERCHE_JOUEUR);
         spawns = list.get(4);
         return spawns;
@@ -293,7 +294,7 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * renvoie le point le plus proche d'une liste de point
      *
      * @param etatDuJeu
      * @param currentposition
@@ -313,7 +314,7 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * Appellée en fin de partie
      *
      * @param lePlateau Le Plateau est donnée en chaine de caractère en paramétre
      *                  la findepartie c'est quand le nombre maximum de tours est réalisé.
@@ -325,7 +326,7 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * definit la direction du prochain mouvement et la renvoie sous forme d'une action
      *
      * @param etatDuJeu   l'etat du jeu en cours
      * @param destination la destination du joueur selectionné
@@ -366,7 +367,7 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * renvoie un boolean true si le site passé en parametre est Important
      *
      * @param plateau
      * @param p

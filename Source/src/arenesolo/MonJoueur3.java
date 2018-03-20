@@ -45,7 +45,6 @@ public class MonJoueur3 extends jeu.Joueur {
      */
     @Override
     protected void debutDePartie(int couleur) {
-        System.out.println("La partie commence, je suis le joueur " + couleur + ".");
 
 
         // initialisation des algorithms, etc...
@@ -69,13 +68,10 @@ public class MonJoueur3 extends jeu.Joueur {
         Point destination = TrouvePlusProche(etatDuJeu, currentposition, sitesImportants);
         while (Plateau.donneProprietaireDuSite(etatDuJeu.donneContenuCellule(destination)) == NUMERO_JOUEUR) {
             // si notre joueur est proprietaire du site // testé fonctionne
-            System.out.println("!!!!! je suis proprietaire de " + destination);
             positionSitesFouille.values().remove(destination);
             sitesImportants.removeAll(Collections.singleton(destination));
             destination = TrouvePlusProche(etatDuJeu, currentposition, sitesImportants);
         }
-
-        System.out.println(" destination= " + destination);
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
 
@@ -90,9 +86,7 @@ public class MonJoueur3 extends jeu.Joueur {
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 40, Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point> sites = positionSitesFinance.get(1);
         Point destination = TrouvePlusProche(etatDuJeu, currentposition, sites);
-        if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
-            System.out.println("pognon trouvé");
-        }
+
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
 
@@ -123,7 +117,6 @@ public class MonJoueur3 extends jeu.Joueur {
         Action a;
         System.out.println("Timer task started at:" + new Date());
         if (tourDepart == 0) {
-            System.out.println("Tour de départ !!!!");
             POSITION_DEPART = this.donnePosition();
             calculeNumeroJoueur(this.donneCouleur());
             tourDepart++;
