@@ -3,6 +3,7 @@
  */
 package arenesolo;
 
+import Thread.Recherche;
 import jeu.Joueur;
 import jeu.Plateau;
 import jeu.astar.Node;
@@ -11,11 +12,16 @@ import javax.management.NotificationBroadcasterSupport;
 import java.awt.*;
 import java.util.*;
 
+import static java.lang.Thread.MAX_PRIORITY;
+import static java.lang.Thread.MIN_PRIORITY;
+
 public class MonJoueur2 extends jeu.Joueur {
     static Point POSITION_DEPART;
     static int NUMERO_JOUEUR;
     int NBsites=0;
-    static int tourDepart=0;
+    static int tourDepart = 0;
+    Recherche tr;
+    Action a;
 
     /**
      *  decrit le nom du joueur
@@ -28,7 +34,6 @@ public class MonJoueur2 extends jeu.Joueur {
      * @param couleur
      */
     @Override
-
     protected void debutDePartie(int couleur) {
         System.out.println("La partie commence, je suis le joueur " + couleur + ".");
 
@@ -87,11 +92,16 @@ public class MonJoueur2 extends jeu.Joueur {
 
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
-        if(tourDepart==0){
+        if(tourDepart == 0){
+            tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
+            tr.setPriority(MAX_PRIORITY);
             System.out.println("Tour de départ !!!!");
             POSITION_DEPART = this.donnePosition();
             calculeNumeroJoueur(this.donneCouleur());
             tourDepart++;
+        }
+        if (tourDepart != 0){
+            tr.interrupt();
         }
         // thread de la mort cloque tout les autres joueurs priority high
             Point currentposition = this.donnePosition();
@@ -103,14 +113,22 @@ public class MonJoueur2 extends jeu.Joueur {
             }
 
             if (NBsites < 2){                //sil il posse moins de deux sites alors il  cherche
-                return chercherTresor(etatDuJeu, currentposition);
+                a = chercherTresor(etatDuJeu, currentposition);
+                tr.setPriority(MAX_PRIORITY);//priorité maximale pour ralentir les autres joueurs
+
             }
             if (this.donneSolde()<60){
-                return chercherPognon(etatDuJeu, currentposition);
+                a = chercherPognon(etatDuJeu, currentposition);
             }
             else{
-                return chercherBagarre(etatDuJeu,currentposition);
+                a = chercherBagarre(etatDuJeu,currentposition);
             }
+            if (tourDepart != 0) {
+                tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
+                tr.setPriority(MAX_PRIORITY);
+            }
+            tr.start();
+            return a;
     }
 
     private void calculeNumeroJoueur(String s) {
@@ -124,7 +142,7 @@ public class MonJoueur2 extends jeu.Joueur {
         int distance=9999;
         Point pointProche=null;
         for(Point p : points){
-            if(etatDuJeu.donneCheminEntre(currentposition, p).size()<distance){
+            if(etatDuJeu.donneCheminEntre(currentposition, p).size() < distance){
                 pointProche=p;
                 distance=etatDuJeu.donneCheminEntre(currentposition, p).size();
             }
