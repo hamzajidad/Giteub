@@ -62,6 +62,7 @@ public class MonJoueur2 extends jeu.Joueur {
         }
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
+
     public Action chercherPognon(Plateau etatDuJeu, Point currentposition){
 
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 40, Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
@@ -72,6 +73,7 @@ public class MonJoueur2 extends jeu.Joueur {
         }
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
+
     public Action chercherBagarre(Plateau etatDuJeu, Point currentposition){
 
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 40, Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
@@ -89,12 +91,13 @@ public class MonJoueur2 extends jeu.Joueur {
         if(tourDepart == 0){
             System.out.println("Tour de départ !!!!");
             POSITION_DEPART =this.donnePosition();
+            calculeNumeroJoueur(this.donneCouleur());
             tourDepart++;
         }
         // thread de la mort cloque tout les autres joueurs priority high
             Point currentposition = this.donnePosition();
             System.out.println("current position : " + currentposition + ", position départ : " + POSITION_DEPART +" Nb site : " + NBsites);
-            calculeNumeroJoueur(this.donneCouleur()); //calcule le numero du joueur
+             //calcule le numero du joueur
 
             if (currentposition == POSITION_DEPART){          // si on est retourné au départ - donc mort on recherche des sites
                 NBsites = 0;
