@@ -97,6 +97,8 @@ public class MonJoueur extends jeu.Joueur {
     }
 
     /**
+     * Description fonction ici
+     *
      * @param etatDuJeu   l'etat du jeu en cours
      * @param destination la destination du joueur selectionné
      * @param depart      la position du départ
@@ -137,6 +139,8 @@ public class MonJoueur extends jeu.Joueur {
     // action
 
     /**
+     * Description fonction ici
+     *
      * @param etatDuJeu on a en parametre l'état du jeu
      * @return ça retourne l'action en cours RIEN, GAUCHE, DROITE, HAUT, BAS
      */
@@ -176,11 +180,12 @@ public class MonJoueur extends jeu.Joueur {
     //commentaries
 
     /**
+     * Description fonction ici
+     *
      * @param lePlateau Le Plateau est donnée en chaine de caractère en paramétre
      *                  la findepartie c'est quand le nombre maximum de tours est réalisé.
      *                  // Exception: Si deux joueurs ont le même nombre de points de notoriété, il n'y a pas de gagnant.
      */
-
     @Override
     protected void finDePartie(String lePlateau) {
         //testGermain96
@@ -196,6 +201,7 @@ public class MonJoueur extends jeu.Joueur {
     */
 
     /**
+     * Description fonction ici
      *
      * @param plateau
      * @param p
@@ -209,16 +215,18 @@ public class MonJoueur extends jeu.Joueur {
     }
 
     /**
+     * Description fonction ici
      *
      * @param plateau
      * @param p
      * @return Ca vérifie si le site surlequel on est positionné appartient ou pas à un adversaire
      */
     public boolean estUnSiteAdverse(Plateau plateau, Point p) {
-        return (  !estUnSiteAbandonne(plateau,p) && Plateau.contientUnSiteQuiNeLuiAppartientPas(this, plateau.donneContenuCellule(p)));
+        return (!estUnSiteAbandonne(plateau, p) && Plateau.contientUnSiteQuiNeLuiAppartientPas(this, plateau.donneContenuCellule(p)));
     }
 
     /**
+     * Description fonction ici
      *
      * @param plateau
      * @param p
@@ -233,10 +241,11 @@ public class MonJoueur extends jeu.Joueur {
     }
 
     /**
+     * Description fonction ici
      *
      * @param plateau
      * @param p
-     * @return  ça fait le tri des sites moins importants parmi tous les sites
+     * @return ça fait le tri des sites moins importants parmi tous les sites
      */
     public boolean estUnSiteMoinsImportant(Plateau plateau, Point p) {
         int contenu = plateau.donneContenuCellule(p);
@@ -247,9 +256,10 @@ public class MonJoueur extends jeu.Joueur {
     }
 
     /**
+     * Description fonction ici
      *
      * @param plateau
-     * @param p le point p
+     * @param p       le point p
      * @return Ca vérifie si le site est abandoné ou pas
      */
     private boolean estUnSiteAbandonne(Plateau plateau, Point p) {
@@ -258,6 +268,7 @@ public class MonJoueur extends jeu.Joueur {
     }
 
     /**
+     * Description fonction ici
      *
      * @param plateau
      * @param p
@@ -268,6 +279,7 @@ public class MonJoueur extends jeu.Joueur {
     }
 
     /**
+     * Description fonction ici
      *
      * @param plateau
      * @param p
@@ -279,6 +291,7 @@ public class MonJoueur extends jeu.Joueur {
     }
 
     /**
+     * Description fonction ici
      *
      * @param joueur
      * @param n

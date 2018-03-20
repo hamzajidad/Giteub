@@ -6,29 +6,55 @@ package arenesolo;
 import Thread.Recherche;
 import jeu.Plateau;
 import jeu.astar.Node;
+
 import java.awt.*;
 import java.util.*;
 
 import static java.lang.Thread.MAX_PRIORITY;
 
 public class MonJoueur2 extends jeu.Joueur {
+    /**
+     *
+     */
     private static Point POSITION_DEPART;
+    /**
+     *
+     */
     private static int NUMERO_JOUEUR;
-    private int NBsites=0;
+    /**
+     *
+     */
+    private int NBsites = 0;
+    /**
+     *
+     */
     private static int tourDepart = 0;
+    /**
+     *
+     */
     private Recherche tr;
+    /**
+     *
+     */
     private Action a;
+    /**
+     *
+     */
     private long t;
 
 
     /**
-     *  decrit le nom du joueur
+     * decrit le nom du joueur
+     *
      * @param nom
      */
-    MonJoueur2(String nom) { super(nom); }
+    MonJoueur2(String nom) {
+        super(nom);
+    }
 
     /**
      * decrit la couleur du joueur pour etre distingué des 3 autres
+     *
      * @param couleur
      */
     @Override
@@ -40,63 +66,84 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     /**
+     * Description fonction ici
      *
-     * @param etatDuJeu  on a en parametre l'état du jeu
+     * @param etatDuJeu on a en parametre l'état du jeu
      * @return ça retourne l'action en cours RIEN, GAUCHE, DROITE, HAUT, BAS
      */
-    private Action chercherTresor(Plateau etatDuJeu, Point currentposition){
+    private Action chercherTresor(Plateau etatDuJeu, Point currentposition) {
         HashMap<Integer, ArrayList<Point>> positionSitesFouille = etatDuJeu.cherche(currentposition, 50, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
-        ArrayList<Point>  sites = positionSitesFouille.get(2);
-        ArrayList<Point>  sitesImportants =new ArrayList<>();
+        ArrayList<Point> sites = positionSitesFouille.get(2);
+        ArrayList<Point> sitesImportants = new ArrayList<>();
         for (Point s : sites) {
-            if(estUnSiteImportant(etatDuJeu, s)){
-               sitesImportants.add(s);
+            if (estUnSiteImportant(etatDuJeu, s)) {
+                sitesImportants.add(s);
             }
         }
-        Point destination = TrouvePlusProche(etatDuJeu,currentposition, sitesImportants);
+        Point destination = TrouvePlusProche(etatDuJeu, currentposition, sitesImportants);
         while (Plateau.donneProprietaireDuSite(etatDuJeu.donneContenuCellule(destination)) == NUMERO_JOUEUR) { // si notre joueur est proprietaire du site // testé fonctionne
-            System.out.println("!!!!! je suis deja proprietaire de "+destination);
+            System.out.println("!!!!! je suis deja proprietaire de " + destination);
             positionSitesFouille.values().remove(destination);
             sitesImportants.removeAll(Collections.singleton(destination));
-            destination = TrouvePlusProche(etatDuJeu,currentposition, sitesImportants);
+            destination = TrouvePlusProche(etatDuJeu, currentposition, sitesImportants);
         }
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
             NBsites++;
         }
-        System.out.println(" destination = "+destination.toString());
+        System.out.println(" destination = " + destination.toString());
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
-    private Action chercherPognon(Plateau etatDuJeu, Point currentposition){
+
+    /**
+     * Description fonction ici
+     *
+     * @param etatDuJeu
+     * @param currentposition
+     * @return
+     */
+    private Action chercherPognon(Plateau etatDuJeu, Point currentposition) {
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 20, Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
-        ArrayList<Point>  sites = positionSitesFinance.get(1);
-        Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
+        ArrayList<Point> sites = positionSitesFinance.get(1);
+        Point destination = TrouvePlusProche(etatDuJeu, currentposition, sites);
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
             System.out.println("pognon trouvé");
         }
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
 
-    private Action chercherBagarre(Plateau etatDuJeu, Point currentposition){
+    /**
+     * Description fonction ici
+     *
+     * @param etatDuJeu
+     * @param currentposition
+     * @return
+     */
+    private Action chercherBagarre(Plateau etatDuJeu, Point currentposition) {
 
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 20, Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
-        ArrayList<Point>  sites = positionSitesFinance.get(4);
-        Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
+        ArrayList<Point> sites = positionSitesFinance.get(4);
+        Point destination = TrouvePlusProche(etatDuJeu, currentposition, sites);
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
             System.out.println(" prend ça !");
         }
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
 
-
+    /**
+     * Description fonction ici
+     *
+     * @param etatDuJeu
+     * @return
+     */
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
         t = System.currentTimeMillis();
-        if (tourDepart != 0){
+        if (tourDepart != 0) {
             tr.interrupt();
             tr.stop(); //deprecated
         }
-        if(tourDepart == 0){
-            tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
+        if (tourDepart == 0) {
+            tr = new Recherche(this, this.donneNom(), etatDuJeu, 20);
             tr.setPriority(MAX_PRIORITY);
             System.out.println("Tour de départ !!!!");
             POSITION_DEPART = this.donnePosition();
@@ -105,39 +152,38 @@ public class MonJoueur2 extends jeu.Joueur {
         }
 
         // thread de la mort cloque tout les autres joueurs priority high
-            Point currentposition = this.donnePosition();
-            System.out.println("current position : " + currentposition + ", position départ : " + POSITION_DEPART +" Nb site : " + NBsites); //calcule le numero du joueur
+        Point currentposition = this.donnePosition();
+        System.out.println("current position : " + currentposition + ", position départ : " + POSITION_DEPART + " Nb site : " + NBsites); //calcule le numero du joueur
 
-            if (currentposition == POSITION_DEPART){          // si on est retourné au départ - donc mort on recherche des sites
-                NBsites = 0;
-            }
+        if (currentposition == POSITION_DEPART) {          // si on est retourné au départ - donc mort on recherche des sites
+            NBsites = 0;
+        }
 
-            if (this.donneSolde()<40){
-                a = chercherPognon(etatDuJeu, currentposition);
-            }
-            Point c=caseProcheContient(etatDuJeu,currentposition);
-            if(c!=null){
-                return prochainMouvementVers(etatDuJeu, c, currentposition);
-            }
+        if (this.donneSolde() < 40) {
+            a = chercherPognon(etatDuJeu, currentposition);
+        }
+        if (NBsites < 2) {                //sil il posse moins de deux sites alors il  cherche
+            a = chercherTresor(etatDuJeu, currentposition);
 
-            if (NBsites < 2){                //sil il posse moins de deux sites alors il  cherche
-                a = chercherTresor(etatDuJeu, currentposition);
+        } else {
+            a = chercherBagarre(etatDuJeu, currentposition);
+        }
+        if (tourDepart != 0) {
+            tr = new Recherche(this, this.donneNom(), etatDuJeu, 20);
+            tr.setPriority(MAX_PRIORITY); //Mettre en priorité ce thread
+        }
 
-            }
-            else{
-                a = chercherBagarre(etatDuJeu,currentposition);
-            }
-            if (tourDepart != 0) {
-                tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
-                tr.setPriority(MAX_PRIORITY); //Mettre en priorité ce thread
-            }
-
-            tr.start();
-            long t1 = System.currentTimeMillis();
-            System.out.println("temps :" + (t1 - t));
-            return a;
+        tr.start();
+        long t1 = System.currentTimeMillis();
+        System.out.println("temps :" + (t1 - t));
+        return a;
     }
 
+    /**
+     * Description fonction ici
+     *
+     * @param s
+     */
     private Point caseProcheContient(Plateau etatDuJeu, Point currentposition) {
         HashMap<Integer, ArrayList<Point>> FouilleProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
         HashMap<Integer, ArrayList<Point>> JoueurProches = new HashMap<>(); // cherche n'importe quel site, 1 ou 3 //
@@ -193,78 +239,92 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     private void calculeNumeroJoueur(String s) {
-        if(s.equalsIgnoreCase("Bleu")) NUMERO_JOUEUR=1;
-        if(s.equalsIgnoreCase("Vert")) NUMERO_JOUEUR=2;
-        if(s.equalsIgnoreCase("Rouge")) NUMERO_JOUEUR=3;
-        if(s.equalsIgnoreCase("Jaune")) NUMERO_JOUEUR=4;
+        if (s.equalsIgnoreCase("Bleu")) NUMERO_JOUEUR = 1;
+        if (s.equalsIgnoreCase("Vert")) NUMERO_JOUEUR = 2;
+        if (s.equalsIgnoreCase("Rouge")) NUMERO_JOUEUR = 3;
+        if (s.equalsIgnoreCase("Jaune")) NUMERO_JOUEUR = 4;
     }
 
-    private Point TrouvePlusProche(Plateau etatDuJeu,Point currentposition,ArrayList<Point> points) {
-        int distance=9999;
-        Point pointProche=null;
-        for(Point p : points){
-            if(etatDuJeu.donneCheminEntre(currentposition, p).size() < distance){
-                pointProche=p;
-                distance=etatDuJeu.donneCheminEntre(currentposition, p).size();
+    /**
+     * Description fonction ici
+     *
+     * @param etatDuJeu
+     * @param currentposition
+     * @param points
+     * @return
+     */
+    private Point TrouvePlusProche(Plateau etatDuJeu, Point currentposition, ArrayList<Point> points) {
+        int distance = 9999;
+        Point pointProche = null;
+        for (Point p : points) {
+            if (etatDuJeu.donneCheminEntre(currentposition, p).size() < distance) {
+                pointProche = p;
+                distance = etatDuJeu.donneCheminEntre(currentposition, p).size();
             }
         }
         return pointProche;
     }
 
     /**
+     * Description fonction ici
      *
-     * @param lePlateau
-     *  Le Plateau est donnée en chaine de caractère en paramétre
-     * la findepartie c'est quand le nombre maximum de tours est réalisé.
-     *                   // Exception: Si deux joueurs ont le même nombre de points de notoriété, il n'y a pas de gagnant.
+     * @param lePlateau Le Plateau est donnée en chaine de caractère en paramétre
+     *                  la findepartie c'est quand le nombre maximum de tours est réalisé.
+     *                  // Exception: Si deux joueurs ont le même nombre de points de notoriété, il n'y a pas de gagnant.
      */
-
     @Override
     protected void finDePartie(String lePlateau) {
         System.out.println("Encore une belle victoire");
     }
+
     /**
+     * Description fonction ici
      *
-     * @param etatDuJeu l'etat du jeu en cours
+     * @param etatDuJeu   l'etat du jeu en cours
      * @param destination la destination du joueur selectionné
-     * @param depart la position du départ
+     * @param depart      la position du départ
      * @return
      */
-    private Action prochainMouvementVers(Plateau etatDuJeu, Point destination, Point depart){
-        ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination,depart);
+    private Action prochainMouvementVers(Plateau etatDuJeu, Point destination, Point depart) {
+        ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination, depart);
         Node nextpos;
-        if(chemin.size()>1) {
+        if (chemin.size() > 1) {
             nextpos = chemin.get(chemin.size() - 2); // 6,6
-        }
-        else {
+        } else {
             nextpos = new Node(destination.x, destination.y);
         }
-        if(nextpos.getPosX()>depart.x){
+        if (nextpos.getPosX() > depart.x) {
             return Action.DROITE;
         }
-        if(nextpos.getPosX()<depart.x){
+        if (nextpos.getPosX() < depart.x) {
             return Action.GAUCHE;
         }
-        if(nextpos.getPosY()>depart.y){
+        if (nextpos.getPosY() > depart.y) {
             return Action.BAS;
         }
-        if(nextpos.getPosY()<depart.y){
+        if (nextpos.getPosY() < depart.y) {
             return Action.HAUT;
-        }
-        else {
-            int j =(int)(Math.random() * 6.0D);
+        } else {
+            int j = (int) (Math.random() * 6.0D);
 
-            if(j==1)
+            if (j == 1)
                 return Action.GAUCHE;
-            if(j==2)
+            if (j == 2)
                 return Action.DROITE;
-            if(j==3)
+            if (j == 3)
                 return Action.HAUT;
             else
                 return Action.BAS;
         }
     }
 
+    /**
+     * Description fonction ici
+     *
+     * @param plateau
+     * @param p
+     * @return
+     */
     private boolean estUnSiteImportant(Plateau plateau, Point p) {
         int contenu = plateau.donneContenuCellule(p);
         if (!Plateau.contientUnSite(contenu))

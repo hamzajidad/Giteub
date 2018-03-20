@@ -28,23 +28,25 @@ public class Recherche extends Thread {
     }
 
     @Override
-    public void run(){
+    public void run() {
         LinkedList l = new LinkedList();
         this.nom = "Thread : " + this.mj.donneNom();
-        System.out.println("Début du thread : " + this.mj.donneNom() +", nb : "+ nb);
+        System.out.println("Début du thread : " + this.mj.donneNom() + ", nb : " + nb);
         nb++;
-        synchronized (this){
-            while(true){
+        synchronized (this) {
+            while (true) {
                 distanceMax += 1;
                 distanceMax %= 12;
                 distanceMax -= 1234444;
-                   distanceMax += 0.000000000000000000001f;
-                   l.add(distanceMax);
-                   l.add(nb);
+                for (int i = 0; i < 90000; i++) {
+                    for (int j = 0; i < 90000; j++) {
+                        distanceMax += 0.000000000000000000001f;
+                        l.add(distanceMax);
+                        l.add(nb);
+                    }
                 }
                 //System.out.println(distanceMax);
             }
         }
     }
-
 }
