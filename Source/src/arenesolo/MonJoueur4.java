@@ -30,6 +30,7 @@ public class MonJoueur4 extends jeu.Joueur {
 
     /**
      * Description fonction ici
+     * IA de test lors du choix de l'IA retenue pour la compétition /!\ Ne pas utiliser /!\
      *
      * @param nom
      */

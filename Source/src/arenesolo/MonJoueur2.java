@@ -26,17 +26,17 @@ public class MonJoueur2 extends jeu.Joueur {
     private static int NUMERO_JOUEUR;
 
     /**
-     *mes nombres de sites dans la partie courante
+     *les nombres de sites dans la partie courante que possède le joueur
      */
     private int NBsites = 0;
 
     /**
-     *le tour départ
+     *Permet de savoir si on est au premier tour d'une partie
      */
     private static int tourDepart = 0;
 
     /**
-     *le thread pour faire perdre du temps au adversaire
+     *le thread pour faire perdre du temps aux adversaires
      */
     private Recherche tr;
 
@@ -52,7 +52,8 @@ public class MonJoueur2 extends jeu.Joueur {
 
 
     /**
-     * decrit le nom du joueur
+     * Decrit le nom du joueur
+     * C'est cette IA que l'on utilise pour la compétition
      *
      * @param nom
      */
