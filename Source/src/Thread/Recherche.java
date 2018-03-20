@@ -29,7 +29,8 @@ public class Recherche extends Thread {
 
     @Override
     public void run(){
-        Point dest = DonnePointObjectifPlusProche(this.p,this.mj.donnePosition(),this.distanceMax, this.Obj);
+        System.out.println("Début du thread : " + this.getName());
+
     }
 
 }

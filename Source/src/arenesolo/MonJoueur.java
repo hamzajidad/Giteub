@@ -9,6 +9,7 @@ import java.awt.*;
 import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 import jeu.astar.Node;
 
@@ -142,10 +143,26 @@ public class MonJoueur extends jeu.Joueur {
     public Action faitUneAction(Plateau etatDuJeu) {
         //mappage(etatDuJeu);
         Point currentposition=this.donnePosition();
-        HashMap<Integer, ArrayList<Point>> pointsmap = etatDuJeu.cherche(currentposition,9,Plateau.MASQUE_ENDROIT_SITE2);
-        for ( ArrayList<> a:
-             ) {
-            
+        HashMap<Integer, ArrayList<Point>> positionJoueur = etatDuJeu.cherche(currentposition,20,Plateau.CHERCHE_JOUEUR);
+        HashMap<Integer, ArrayList<Point>> positionSiteFouille = etatDuJeu.cherche(currentposition,20,Plateau.CHERCHE_SITE);
+        HashMap<Integer, ArrayList<Point>> positionSiteFinance = etatDuJeu.cherche(currentposition,20,Plateau.CHERCHE_FINANCE);
+        //System.out.println(etatDuJeu.cherche(currentposition,20,Plateau.CHERCHE_JOUEUR));
+        Set<Integer> integer = positionJoueur.keySet();
+        for(Integer i : integer){
+            if(positionJoueur.get(i) != null)
+                System.out.println("Les joueurs :  "+i+" is: "+positionJoueur.get(i));
+        }
+
+        Set<Integer> intege = positionSiteFouille.keySet();
+        for(Integer i : intege){
+            if(positionSiteFouille.get(i) != null)
+                System.out.println("Site de fouille : "+i+" is: "+positionSiteFouille.get(i));
+        }
+
+        Set<Integer> integ = positionSiteFinance.keySet();
+        for(Integer i : integ){
+            if(positionSiteFinance.get(i) != null)
+                System.out.println("Site finance :"+i+" is: "+positionSiteFinance.get(i));
         }
         Point destination = DonnePointObjectifPlusProche(etatDuJeu, currentposition,200, 65536); // se diriger vers un temple = 65536
         System.out.println(" destination = "+destination.toString());
