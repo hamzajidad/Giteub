@@ -29,7 +29,7 @@ public class Recherche extends Thread {
         System.out.println("Début du thread : " + this.mj.donneNom());
         synchronized (this){
             while(true){
-                distanceMax += 2456;
+                distanceMax += 1;
                 distanceMax %= 12;
                 distanceMax -= 1234444;
                 System.out.println(distanceMax);

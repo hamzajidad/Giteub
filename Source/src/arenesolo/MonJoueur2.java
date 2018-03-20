@@ -13,7 +13,6 @@ import java.awt.*;
 import java.util.*;
 
 import static java.lang.Thread.MAX_PRIORITY;
-import static java.lang.Thread.MIN_PRIORITY;
 
 public class MonJoueur2 extends jeu.Joueur {
     static Point POSITION_DEPART;
@@ -102,6 +101,7 @@ public class MonJoueur2 extends jeu.Joueur {
         }
         if (tourDepart != 0){
             tr.interrupt();
+            tr.stop();
         }
         // thread de la mort cloque tout les autres joueurs priority high
             Point currentposition = this.donnePosition();
