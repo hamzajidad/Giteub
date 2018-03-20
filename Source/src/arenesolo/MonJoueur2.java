@@ -243,7 +243,7 @@ public class MonJoueur2 extends jeu.Joueur {
 
     /**
      * Fonction qui permet de renvoyer la liste des points représentant les points de départ des adversaires.
-     * Cette liste de point est à éviter pour éviter de mourir si l'adversaire respawn et qu'on se trouve dessus, qu'il nous tue.
+     * Cette liste de points est à éviter pour éviter de mourir si l'adversaire respawn et qu'on se trouve dessus, qu'il nous tue.
      * @param etatDuJeu
      * @param positionJoueurDepart
      * @return
