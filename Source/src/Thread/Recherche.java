@@ -33,6 +33,7 @@ public class Recherche extends Thread {
                 distanceMax += 1;
                 distanceMax %= 12;
                 distanceMax -= 1234444;
+               // System.out.println(distanceMax);
                 distanceMax -= 1234444;
                 //System.out.println(distanceMax);
             }

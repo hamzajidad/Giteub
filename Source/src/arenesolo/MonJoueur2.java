@@ -91,7 +91,9 @@ public class MonJoueur2 extends jeu.Joueur {
 
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
+
         if(tourDepart == 0){
+            System.out.println("time d"+new Date());
             tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
             tr.setPriority(MAX_PRIORITY);
             System.out.println("Tour de départ !!!!");
@@ -124,7 +126,9 @@ public class MonJoueur2 extends jeu.Joueur {
                 tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
                 tr.setPriority(MAX_PRIORITY); //Mettre en priorité ce thread
             }
+
             tr.start();
+            System.out.println("time f"+new Date());
             return a;
     }
 
@@ -158,6 +162,7 @@ public class MonJoueur2 extends jeu.Joueur {
     @Override
     protected void finDePartie(String lePlateau) {
         System.out.println("Encore une belle victoire");
+        System.out.println(new Date());
     }
     /**
      *
