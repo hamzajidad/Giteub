@@ -144,7 +144,7 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * cherche les cases autour du joueur si elle contiennent Site de fouille/joueur/Financenement alors retourne l'action correspondante
      *
      * @param etatDuJeu on a en parametre l'état du jeu
      * @return ça retourne l'action en cours RIEN, GAUCHE, DROITE, HAUT, BAS
@@ -158,7 +158,8 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * Fonction appelée a chaque debut de tout par le maitre du jeu,
+     * reçooit le plateau en parametre et doit renvoyer une action correspondante au deplacement HAUT/BAC/GAUCHE/DROITE
      *
      * @param etatDuJeu
      * @return
