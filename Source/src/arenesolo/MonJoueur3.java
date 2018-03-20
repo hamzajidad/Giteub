@@ -11,7 +11,7 @@ import javax.management.NotificationBroadcasterSupport;
 import java.awt.*;
 import java.util.*;
 
-public class MonJoueur2 extends jeu.Joueur {
+public class MonJoueur3 extends jeu.Joueur {
     static Point POSITION_DEPART;
     static int NUMERO_JOUEUR;
     int NBsites=0;
@@ -21,7 +21,7 @@ public class MonJoueur2 extends jeu.Joueur {
      *  decrit le nom du joueur
      * @param nom
      */
-    public MonJoueur2(String nom) { super(nom); }
+    public MonJoueur3(String nom) { super(nom); }
 
     /**
      * decrit la couleur du joueur pour etre distingué des 3 autres
@@ -47,7 +47,7 @@ public class MonJoueur2 extends jeu.Joueur {
         ArrayList<Point>  sitesImportants =new ArrayList<Point>();
         for (Point s : sites) {
             if(estUnSiteImportant(etatDuJeu, s)){
-               sitesImportants.add(s);
+                sitesImportants.add(s);
             }
         }
         Point destination = TrouvePlusProche(etatDuJeu,currentposition, sitesImportants);
@@ -94,23 +94,21 @@ public class MonJoueur2 extends jeu.Joueur {
             tourDepart++;
         }
         // thread de la mort cloque tout les autres joueurs priority high
-            Point currentposition = this.donnePosition();
-            System.out.println("current position : " + currentposition + ", position départ : " + POSITION_DEPART +" Nb site : " + NBsites);
-             //calcule le numero du joueur
+        Point currentposition = this.donnePosition();
+        System.out.println("current position : " + currentposition + ", position départ : " + POSITION_DEPART +" Nb site : " + NBsites);
+        //calcule le numero du joueur
 
-            if (currentposition == POSITION_DEPART){          // si on est retourné au départ - donc mort on recherche des sites
-                NBsites = 0;
-            }
+        if (currentposition == POSITION_DEPART){          // si on est retourné au départ - donc mort on recherche des sites
+            NBsites = 0;
+        }
+        if (this.donneSolde()<60){
+            return chercherPognon(etatDuJeu, currentposition);
+        }
 
-            if (NBsites < 2){                //sil il posse moins de deux sites alors il  cherche
-                return chercherTresor(etatDuJeu, currentposition);
-            }
-            if (this.donneSolde()<60){
-                return chercherPognon(etatDuJeu, currentposition);
-            }
-            else{
-                return chercherBagarre(etatDuJeu,currentposition);
-            }
+        else{               //sil il posse moins de deux sites alors il  cherche
+            return chercherTresor(etatDuJeu, currentposition);
+        }
+
     }
 
     private void calculeNumeroJoueur(String s) {
@@ -142,7 +140,6 @@ public class MonJoueur2 extends jeu.Joueur {
 
     @Override
     protected void finDePartie(String lePlateau) {
-        System.out.println("Encore une belle victoire");
     }
     /**
      *
@@ -158,12 +155,12 @@ public class MonJoueur2 extends jeu.Joueur {
             nextpos = chemin.get(chemin.size() - 2); // 6,6
         }
         else {
-                nextpos = new Node(destination.x, destination.y);
-            }
-            if(nextpos.getPosX()>depart.x){
-                return Action.DROITE;
-            }
-            if(nextpos.getPosX()<depart.x){
+            nextpos = new Node(destination.x, destination.y);
+        }
+        if(nextpos.getPosX()>depart.x){
+            return Action.DROITE;
+        }
+        if(nextpos.getPosX()<depart.x){
             return Action.GAUCHE;
         }
         if(nextpos.getPosY()>depart.y){
