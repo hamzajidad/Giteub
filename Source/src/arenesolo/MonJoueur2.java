@@ -140,39 +140,56 @@ public class MonJoueur2 extends jeu.Joueur {
 
     private Point caseProcheContient(Plateau etatDuJeu, Point currentposition) {
         HashMap<Integer, ArrayList<Point>> FouilleProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
-        HashMap<Integer, ArrayList<Point>> JoueurProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
+        HashMap<Integer, ArrayList<Point>> JoueurProches = new HashMap<>(); // cherche n'importe quel site, 1 ou 3 //
         HashMap<Integer, ArrayList<Point>> FinanceProches= new HashMap<>();
-        if(this.donneSolde()<85){
-            JoueurProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
+        if(this.donneSolde()<60){
+            FinanceProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_FINANCE);
         }
+        if(this.donneSolde()<60){
+            JoueurProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_JOUEUR);
+        }
+
         ArrayList<Point>  finances = FinanceProches.get(1);
         ArrayList<Point>  joueurs = JoueurProches.get(4);
+        joueurs.remove(donnePosition());
         ArrayList<Point>  fouilles = FouilleProches.get(2);
-        if( finances.size()>0 && joueurs.size()>0 && fouilles.size()>0){
+
+        if( finances.size()>0 || joueurs.size()>0 || fouilles.size()>0){
             if(joueurs.size()>0){
-                for (Point f: fouilles) {
-                    return f;
+                int nbSite =0, nbSiteMax = 0;
+
+                for (Point p: joueurs) {
+                    nbSite = etatDuJeu.nombreDeSites1Joueur(etatDuJeu.donneJoueurEnPosition(p).donneCouleurNumerique()-1)+etatDuJeu.nombreDeSites2Joueur(etatDuJeu.donneJoueurEnPosition(p).donneCouleurNumerique()-1);
+                    if ( nbSite > nbSiteMax){
+                        nbSiteMax = nbSite;
+                    }
                 }
+                if(nbSiteMax>0){
+                    for (Point p: joueurs) {
+                        nbSite = etatDuJeu.nombreDeSites1Joueur(etatDuJeu.donneJoueurEnPosition(p).donneCouleurNumerique()-1)+etatDuJeu.nombreDeSites2Joueur(etatDuJeu.donneJoueurEnPosition(p).donneCouleurNumerique()-1);
+                        if(nbSite == nbSiteMax ){
+                            return p;
+                        }
+                    }
+                }
+                return TrouvePlusProche(etatDuJeu,currentposition,joueurs);
             }
             if(finances.size()>0){
-                for (Point f: fouilles) {
-                    return f;
-                }
+                return TrouvePlusProche(etatDuJeu,currentposition,finances);
             }
             if(fouilles.size()>0){
                 for (Point f: fouilles) {
-                    if(!(Plateau.donneProprietaireDuSite(etatDuJeu.donneContenuCellule(f)) == NUMERO_JOUEUR)){
+                    if(this.estUnSiteImportant(etatDuJeu,f)){
                         return f;
                     }
                 }
+                return TrouvePlusProche(etatDuJeu,currentposition,fouilles);
             }
             return null;
         }
         else{
             return null;
         }
-
-
     }
 
     private void calculeNumeroJoueur(String s) {

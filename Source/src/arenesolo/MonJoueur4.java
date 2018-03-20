@@ -1,5 +1,6 @@
 package arenesolo;
 
+import jeu.Joueur;
 import jeu.Plateau;
 import jeu.astar.Node;
 
@@ -74,8 +75,15 @@ public class MonJoueur4 extends jeu.Joueur {
 
         HashMap<Integer, ArrayList<Point>> positionsJoueur = etatDuJeu.cherche(currentposition, etatDuJeu.donneTaille(), Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  joueurs = positionsJoueur.get(4);
+        ArrayList<Point>  joueursAvecSite = new ArrayList<Point>();
+        for (Point p : joueurs) {
+            if (etatDuJeu.nombreDeSites1Joueur(etatDuJeu.donneJoueurEnPosition(p).donneCouleurNumerique()-1) > 0 ){
+                joueursAvecSite.add(p);
+            }
+        }
+
         System.out.println("\"------------------->JOUEUR 4: Joueur Supprime:"+joueurs.remove(currentposition) );
-        Point destination = TrouvePlusProche(etatDuJeu,currentposition, joueurs);
+        Point destination = TrouvePlusProche(etatDuJeu,currentposition, joueursAvecSite);
 
         System.out.println("------------------->JOUEUR 4: Joueur Proche ="+destination);
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
