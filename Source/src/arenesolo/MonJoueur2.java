@@ -29,7 +29,6 @@ public class MonJoueur2 extends jeu.Joueur {
      */
     @Override
     protected void debutDePartie(int couleur) {
-        POSITION_DEPART =this.donnePosition();
         System.out.println("La partie commence, je suis le joueur " + couleur + ".");
 
 
@@ -90,7 +89,7 @@ public class MonJoueur2 extends jeu.Joueur {
     public Action faitUneAction(Plateau etatDuJeu) {
         if(tourDepart == 0){
             System.out.println("Tour de départ !!!!");
-            POSITION_DEPART =this.donnePosition();
+            POSITION_DEPART = this.donnePosition();
             calculeNumeroJoueur(this.donneCouleur());
             tourDepart++;
         }
@@ -104,10 +103,10 @@ public class MonJoueur2 extends jeu.Joueur {
             }
 
             if (NBsites < 2){                //sil il posse moins de deux sites alors il  cherche
-                return chercherTresor(etatDuJeu,currentposition);
+                return chercherTresor(etatDuJeu, currentposition);
             }
-            if(this.donneSolde()<60){
-                chercherPognon(etatDuJeu,currentposition);
+            if (this.donneSolde()<60){
+                chercherPognon(etatDuJeu, currentposition);
             }
         System.out.println("ATTENTION DEPLACEMENT RANDOM ");
             return super.faitUneAction(etatDuJeu);
