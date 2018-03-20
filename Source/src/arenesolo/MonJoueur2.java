@@ -16,31 +16,37 @@ import static java.lang.Thread.MAX_PRIORITY;
 
 public class MonJoueur2 extends jeu.Joueur {
     /**
-     *
+     *ma position  de départ dans la partie courante
      */
     private static Point POSITION_DEPART;
+
     /**
-     *
+     *mon numéro dans la partie courante
      */
     private static int NUMERO_JOUEUR;
+
     /**
-     *
+     *mes nombres de sites dans la partie courante
      */
     private int NBsites = 0;
+
     /**
-     *
+     *le tour départ
      */
     private static int tourDepart = 0;
+
     /**
-     *
+     *le thread pour faire perdre du temps au adversaire
      */
     private Recherche tr;
+
     /**
-     *
+     *l'action à faire à chaque tour
      */
     private Action a;
+
     /**
-     *
+     *le temps de départ d'une action pour calculer le temps d'exécution
      */
     private long t;
 
@@ -98,7 +104,7 @@ public class MonJoueur2 extends jeu.Joueur {
      *
      * @param etatDuJeu
      * @param currentposition
-     * @return
+     * @return action à faire
      */
     private Action chercherPognon(Plateau etatDuJeu, Point currentposition) {
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, etatDuJeu.donneTaille(), Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
@@ -112,10 +118,10 @@ public class MonJoueur2 extends jeu.Joueur {
 
     /**
      * fonction utilisée lorsque le joueur cherche de la bagarre
-     *
-     * @param etatDuJeu
-     * @param currentposition
-     * @return
+     *on cherche le joueur avec le plus de site le plus proche
+     * @param etatDuJeu -le plateau
+     * @param currentposition -la position de départ
+     * @return l'action à faire
      */
     private Action chercherBagarre(Plateau etatDuJeu, Point currentposition) {
         System.out.println("Je cherche la bagarre");
@@ -159,7 +165,7 @@ public class MonJoueur2 extends jeu.Joueur {
 
     /**
      * Fonction appelée a chaque debut de tout par le maitre du jeu,
-     * reçooit le plateau en parametre et doit renvoyer une action correspondante au deplacement HAUT/BAC/GAUCHE/DROITE
+     * reçoit le plateau en parametre et doit renvoyer une action correspondante au deplacement HAUT/BAC/GAUCHE/DROITE
      *
      * @param etatDuJeu
      * @return
@@ -215,9 +221,14 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     /**
-     * cherche si les cases adjacentes contiennent des choses d'interet
+     * cherche si les cases adjacentes contiennent des choses d'interet,
+     *on cherche le joueur avec le max de site dans le cas où on a au moins 40 milliers,
+     * après le centre de finance le plus proche dans le cas où on a moins 60 milliers ,
+     * à la fin ,le site le plus important
      *
-     * @param s
+     * @param etatDuJeu -un plateau
+     * @param currentposition -la position courante
+     * @return le point correspondant avec le plus d'intérêt comme évoqué avant, sinon null
      */
     private Point caseProcheContient(Plateau etatDuJeu, Point currentposition) {
         HashMap<Integer, ArrayList<Point>> FouilleProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
@@ -287,6 +298,10 @@ public class MonJoueur2 extends jeu.Joueur {
         return spawns;
     }
 
+    /**
+     * Calcul le numero des joueur en fonction couleur
+     * @param s -la couleur du joueur
+     */
     private void calculeNumeroJoueur(String s) {
         if (s.equalsIgnoreCase("Bleu")) NUMERO_JOUEUR = 1;
         if (s.equalsIgnoreCase("Vert")) NUMERO_JOUEUR = 2;
@@ -332,7 +347,7 @@ public class MonJoueur2 extends jeu.Joueur {
      * @param etatDuJeu   l'etat du jeu en cours
      * @param destination la destination du joueur selectionné
      * @param depart      la position du départ
-     * @return
+     * @return action à faire
      */
     private Action prochainMouvementVers(Plateau etatDuJeu, Point destination, Point depart) {
         ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination, depart);
@@ -370,9 +385,9 @@ public class MonJoueur2 extends jeu.Joueur {
     /**
      * renvoie un boolean true si le site passé en parametre est Important
      *
-     * @param plateau
-     * @param p
-     * @return
+     * @param plateau -le plateau
+     * @param p -le point à tester
+     * @return vrai si présence de site important sur le point p
      */
     private boolean estUnSiteImportant(Plateau plateau, Point p) {
         int contenu = plateau.donneContenuCellule(p);
