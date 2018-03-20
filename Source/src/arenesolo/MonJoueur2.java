@@ -3,21 +3,19 @@
  */
 package arenesolo;
 
-import Thread.Recherche;
 import jeu.Joueur;
 import jeu.Plateau;
 import jeu.astar.Node;
 
+import javax.management.NotificationBroadcasterSupport;
 import java.awt.*;
 import java.util.*;
-
-import static java.lang.Thread.MIN_PRIORITY;
 
 public class MonJoueur2 extends jeu.Joueur {
     static Point POSITION_DEPART;
     static int NUMERO_JOUEUR;
     int NBsites=0;
-    static int tourDepart = 0;
+    static int tourDepart=0;
 
     /**
      *  decrit le nom du joueur
@@ -30,6 +28,7 @@ public class MonJoueur2 extends jeu.Joueur {
      * @param couleur
      */
     @Override
+
     protected void debutDePartie(int couleur) {
         System.out.println("La partie commence, je suis le joueur " + couleur + ".");
 
@@ -45,32 +44,29 @@ public class MonJoueur2 extends jeu.Joueur {
     public Action chercherTresor(Plateau etatDuJeu, Point currentposition){
         HashMap<Integer, ArrayList<Point>> positionSitesFouille = etatDuJeu.cherche(currentposition, 50, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFouille.get(2);
+        ArrayList<Point>  sitesImportants =new ArrayList<Point>();
         for (Point s : sites) {
-            System.out.println(s +" "+ estUnSiteImportant(etatDuJeu, s));
-            /*if(!estUnSiteImportant(etatDuJeu, s)){
-                sites.remove(s);
-            }*/
+            if(estUnSiteImportant(etatDuJeu, s)){
+               sitesImportants.add(s);
+            }
         }
-        Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
+        Point destination = TrouvePlusProche(etatDuJeu,currentposition, sitesImportants);
         while (Plateau.donneProprietaireDuSite(etatDuJeu.donneContenuCellule(destination)) == NUMERO_JOUEUR) {
             // si notre joueur est proprietaire du site // testé fonctionne
-            System.out.println("!!!!! je suis proprietaire");
-            System.out.println(destination);
+            System.out.println("!!!!! je suis proprietaire de "+destination);
             positionSitesFouille.values().remove(destination);
-            sites.removeAll(Collections.singleton(destination));
+            sitesImportants.removeAll(Collections.singleton(destination));
 
-            System.out.println(positionSitesFouille.values());
-            destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
-            System.out.println(destination);
+            destination = TrouvePlusProche(etatDuJeu,currentposition, sitesImportants);
         }
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
             NBsites++;
         }
+        System.out.println(" destination= "+destination);
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
 
     public Action chercherPognon(Plateau etatDuJeu, Point currentposition){
-
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 40, Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFinance.get(1);
         Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
@@ -94,11 +90,7 @@ public class MonJoueur2 extends jeu.Joueur {
 
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
-        chercherTresor(etatDuJeu, new Point (0,0));
-        if(tourDepart == 0){
-            Recherche tr = new Recherche(this, this.donneNom(),etatDuJeu,20);
-            tr.setPriority(MIN_PRIORITY);//priorité minimale
-            tr.start();
+        if(tourDepart==0){
             System.out.println("Tour de départ !!!!");
             POSITION_DEPART = this.donnePosition();
             calculeNumeroJoueur(this.donneCouleur());
@@ -165,11 +157,11 @@ public class MonJoueur2 extends jeu.Joueur {
     public Action prochainMouvementVers(Plateau etatDuJeu, Point destination, Point depart){
         ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination,depart);
         Node nextpos;
-        if(chemin.size()>1)
-            nextpos = chemin.get(chemin.size()-2); // 6,6
+        if(chemin.size()>1) {
+            nextpos = chemin.get(chemin.size() - 2); // 6,6
+        }
         else {
                 nextpos = new Node(destination.x, destination.y);
-                System.out.println("destination atteinte");
             }
             if(nextpos.getPosX()>depart.x){
                 return Action.DROITE;
@@ -177,11 +169,11 @@ public class MonJoueur2 extends jeu.Joueur {
             if(nextpos.getPosX()<depart.x){
             return Action.GAUCHE;
         }
-        if(nextpos.getPosX()>depart.y){
-            return Action.HAUT;
-        }
-        if(nextpos.getPosX()<depart.y){
+        if(nextpos.getPosY()>depart.y){
             return Action.BAS;
+        }
+        if(nextpos.getPosY()<depart.y){
+            return Action.HAUT;
         }
         else {
             int j =(int)(Math.random() * 6.0D);
