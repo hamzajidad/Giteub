@@ -62,8 +62,6 @@ public class MonJoueur2 extends jeu.Joueur {
     @Override
     protected void debutDePartie(int couleur) {
         System.out.println("La partie commence, je suis le joueur " + couleur + ".");
-
-
         // initialisation des algorithms, etc...
     }
 
@@ -121,18 +119,28 @@ public class MonJoueur2 extends jeu.Joueur {
      * @return
      */
     private Action chercherBagarre(Plateau etatDuJeu, Point currentposition) {
+        HashMap<Integer, ArrayList<Point>> positionsJoueur = etatDuJeu.cherche(currentposition, etatDuJeu.donneTaille(), Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
+        ArrayList<Point>  joueurs = positionsJoueur.get(4);
+        joueurs.remove(this.donnePosition());
+        ArrayList<Point>  joueursAvecSite = new ArrayList<Point>();
+        for (Point p : joueurs) {
+            if (etatDuJeu.nombreDeSites1Joueur(etatDuJeu.donneJoueurEnPosition(p).donneCouleurNumerique()-1) > 0 ){
+                joueursAvecSite.add(p);
+            }
+        }
 
-        HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 20, Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
-        ArrayList<Point> sites = positionSitesFinance.get(4);
-        Point destination = TrouvePlusProche(etatDuJeu, currentposition, sites);
+        System.out.println("\"------------------->JOUEUR 4: Joueur Supprime:"+joueurs.remove(currentposition) );
+        Point destination = TrouvePlusProche(etatDuJeu,currentposition, joueursAvecSite);
+
+        System.out.println("------------------->JOUEUR 4: Joueur Proche =" + destination);
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
-            System.out.println(" prend ça !");
+            System.out.println("Bagarre trouvé");
         }
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
 
     /**
-     * Description fonction ici
+     * Fonction appellée par e maitre du jeu au debut de chaque tour
      *
      * @param etatDuJeu
      * @return
@@ -144,12 +152,11 @@ public class MonJoueur2 extends jeu.Joueur {
             tr.interrupt();
             tr.stop(); //deprecated
         }
-        if (tourDepart == 0) {
-            tr = new Recherche(this, this.donneNom(), etatDuJeu, 20);
-            tr.setPriority(MAX_PRIORITY);
+        if(tourDepart == 0) {
+            //tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
+            //tr.setPriority(MAX_PRIORITY);
             System.out.println("Tour de départ !!!!");
             POSITION_DEPART = this.donnePosition();
-            System.out.println(trouvePointSpawnAdversaire(etatDuJeu, this.donnePosition()));
             calculeNumeroJoueur(this.donneCouleur());
             tourDepart++;
         }
@@ -183,7 +190,7 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * cherche si les cases adjacentes contiennent des choses d'interet
      *
      * @param s
      */
@@ -263,7 +270,7 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     /**
-     * Description fonction ici
+     * renvoie le point le plus proche d'une liste de point
      *
      * @param etatDuJeu
      * @param currentposition
