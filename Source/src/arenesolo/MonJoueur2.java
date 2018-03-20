@@ -10,6 +10,7 @@ import jeu.astar.Node;
 
 import javax.management.NotificationBroadcasterSupport;
 import java.awt.*;
+import java.sql.Time;
 import java.util.*;
 
 import static java.lang.Thread.MAX_PRIORITY;
@@ -21,6 +22,8 @@ public class MonJoueur2 extends jeu.Joueur {
     static int tourDepart = 0;
     Recherche tr;
     Action a;
+    long t;
+
 
     /**
      *  decrit le nom du joueur
@@ -91,9 +94,8 @@ public class MonJoueur2 extends jeu.Joueur {
 
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
-
+        t = System.currentTimeMillis();
         if(tourDepart == 0){
-            System.out.println("time d"+new Date());
             tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
             tr.setPriority(MAX_PRIORITY);
             System.out.println("Tour de départ !!!!");
@@ -112,13 +114,15 @@ public class MonJoueur2 extends jeu.Joueur {
             if (currentposition == POSITION_DEPART){          // si on est retourné au départ - donc mort on recherche des sites
                 NBsites = 0;
             }
+
+            if (NBsites < 2){                //sil il posse moins de deux sites alors il  cherche
+                a = chercherTresor(etatDuJeu, currentposition);
+
+            }
             if (this.donneSolde()<60){
                 a = chercherPognon(etatDuJeu, currentposition);
             }
-            if (NBsites < 2){                //sil il posse moins de deux sites alors il  cherche
-                a = chercherTresor(etatDuJeu, currentposition);
-                //tr.setPriority(MAX_PRIORITY);//priorité maximale pour ralentir les autres joueurs
-            }
+
             else{
                 a = chercherBagarre(etatDuJeu,currentposition);
             }
@@ -126,9 +130,9 @@ public class MonJoueur2 extends jeu.Joueur {
                 tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
                 tr.setPriority(MAX_PRIORITY); //Mettre en priorité ce thread
             }
-
             tr.start();
-            System.out.println("time f"+new Date());
+            long t1 = System.currentTimeMillis();
+            System.out.println("temps :" + (t1 - t));
             return a;
     }
 
@@ -162,7 +166,6 @@ public class MonJoueur2 extends jeu.Joueur {
     @Override
     protected void finDePartie(String lePlateau) {
         System.out.println("Encore une belle victoire");
-        System.out.println(new Date());
     }
     /**
      *

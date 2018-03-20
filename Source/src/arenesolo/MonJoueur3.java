@@ -16,6 +16,8 @@ public class MonJoueur3 extends jeu.Joueur {
     static int NUMERO_JOUEUR;
     int NBsites=0;
     static int tourDepart=0;
+    long t;
+    Action a;
 
     /**
      *  decrit le nom du joueur
@@ -87,6 +89,7 @@ public class MonJoueur3 extends jeu.Joueur {
 
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
+        t = System.currentTimeMillis();
         Action a;
         System.out.println("Timer task started at:"+new Date());
         if(tourDepart==0){
@@ -106,9 +109,10 @@ public class MonJoueur3 extends jeu.Joueur {
             a= chercherPognon(etatDuJeu, currentposition);
         }
         else{               //sil il posse moins de deux sites alors il  cherche
-            a= chercherTresor(etatDuJeu, currentposition);
+            a = chercherTresor(etatDuJeu, currentposition);
         }
-        System.out.println("Timer task stopped at:"+new Date());
+        long t1 = System.currentTimeMillis();
+        System.out.println("temps :" + (t1 - t));
         return a;
     }
 
