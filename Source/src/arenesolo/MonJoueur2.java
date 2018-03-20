@@ -4,10 +4,12 @@
 package arenesolo;
 
 import Thread.Recherche;
+import jeu.Joueur;
 import jeu.Plateau;
 import jeu.astar.Node;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static java.lang.Thread.MAX_PRIORITY;
@@ -60,8 +62,6 @@ public class MonJoueur2 extends jeu.Joueur {
     @Override
     protected void debutDePartie(int couleur) {
         System.out.println("La partie commence, je suis le joueur " + couleur + ".");
-
-
         // initialisation des algorithms, etc...
     }
 
@@ -119,32 +119,28 @@ public class MonJoueur2 extends jeu.Joueur {
      * @return
      */
     private Action chercherBagarre(Plateau etatDuJeu, Point currentposition) {
+        HashMap<Integer, ArrayList<Point>> positionsJoueur = etatDuJeu.cherche(currentposition, etatDuJeu.donneTaille(), Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
+        ArrayList<Point>  joueurs = positionsJoueur.get(4);
+        joueurs.remove(this.donnePosition());
+        ArrayList<Point>  joueursAvecSite = new ArrayList<Point>();
+        for (Point p : joueurs) {
+            if (etatDuJeu.nombreDeSites1Joueur(etatDuJeu.donneJoueurEnPosition(p).donneCouleurNumerique()-1) > 0 ){
+                joueursAvecSite.add(p);
+            }
+        }
 
-        HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 20, Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
-        ArrayList<Point>  sites = positionSitesFinance.get(4);
-        Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
+        System.out.println("\"------------------->JOUEUR 4: Joueur Supprime:"+joueurs.remove(currentposition) );
+        Point destination = TrouvePlusProche(etatDuJeu,currentposition, joueursAvecSite);
+
+        System.out.println("------------------->JOUEUR 4: Joueur Proche =" + destination);
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
-            System.out.println(" prend ça !");
+            System.out.println("Bagarre trouvé");
         }
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
 
     /**
-     * Description fonction ici
-     *
-     * @param etatDuJeu on a en parametre l'état du jeu
-     * @return ça retourne l'action en cours RIEN, GAUCHE, DROITE, HAUT, BAS
-     */
-    private Action chercherCaseAutour(Plateau etatDuJeu, Point currentposition) {
-        Point autour = this.caseProcheContient(etatDuJeu,currentposition);
-        if(autour != null){
-            return prochainMouvementVers(etatDuJeu, autour, currentposition);
-        }
-        return null;
-    }
-
-    /**
-     * Description fonction ici
+     * Fonction appellée par e maitre du jeu au debut de chaque tour
      *
      * @param etatDuJeu
      * @return
@@ -156,9 +152,9 @@ public class MonJoueur2 extends jeu.Joueur {
             tr.interrupt();
             tr.stop(); //deprecated
         }
-        if (tourDepart == 0) {
-            tr = new Recherche(this, this.donneNom(), etatDuJeu, 20);
-            tr.setPriority(MAX_PRIORITY);
+        if(tourDepart == 0) {
+            //tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
+            //tr.setPriority(MAX_PRIORITY);
             System.out.println("Tour de départ !!!!");
             POSITION_DEPART = this.donnePosition();
             calculeNumeroJoueur(this.donneCouleur());
@@ -209,12 +205,12 @@ public class MonJoueur2 extends jeu.Joueur {
      */
     private Point caseProcheContient(Plateau etatDuJeu, Point currentposition) {
         HashMap<Integer, ArrayList<Point>> FouilleProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
-        HashMap<Integer, ArrayList<Point>> JoueurProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
-        HashMap<Integer, ArrayList<Point>> FinanceProches= etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_FINANCE);
+        HashMap<Integer, ArrayList<Point>> JoueurProches = new HashMap<>(); // cherche n'importe quel site, 1 ou 3 //
+        HashMap<Integer, ArrayList<Point>> FinanceProches= new HashMap<>();
         if(this.donneSolde()<60){
             FinanceProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_FINANCE);
         }
-        if(this.donneSolde()>40){
+        if(this.donneSolde()<60){
             JoueurProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_JOUEUR);
         }
 
@@ -223,7 +219,7 @@ public class MonJoueur2 extends jeu.Joueur {
         joueurs.remove(donnePosition());
         ArrayList<Point>  fouilles = FouilleProches.get(2);
 
-        if( ( this.donneSolde()>40 && finances.size()>0  ) || (joueurs != null && joueurs.size()>0 && this.donneSolde()>40 ) || fouilles.size()>0){
+        if( finances.size()>0 || joueurs.size()>0 || fouilles.size()>0){
             if(joueurs.size()>0){
                 int nbSite =0, nbSiteMax = 0;
 
@@ -259,6 +255,20 @@ public class MonJoueur2 extends jeu.Joueur {
         else{
             return null;
         }
+    }
+
+    /**
+     * Fonction qui permet de renvoyer la liste des points représentant les points de départ des adversaires.
+     * Cette liste de points est à éviter pour éviter de mourir si l'adversaire respawn et qu'on se trouve dessus, qu'il nous tue.
+     * @param etatDuJeu
+     * @param positionJoueurDepart
+     * @return
+     */
+    private ArrayList<Point> trouvePointSpawnAdversaire(Plateau etatDuJeu, Point positionJoueurDepart){
+        ArrayList<Point> spawns = new ArrayList<>();
+        HashMap<Integer, ArrayList<Point>> list = etatDuJeu.cherche(positionJoueurDepart, 20, Plateau.CHERCHE_JOUEUR);
+        spawns = list.get(4);
+        return spawns;
     }
 
     private void calculeNumeroJoueur(String s) {
