@@ -4,8 +4,6 @@ import arenesolo.MonJoueur2;
 import jeu.Plateau;
 
 import java.awt.*;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.LinkedList;
 
 public class Recherche extends Thread {
@@ -23,10 +21,10 @@ public class Recherche extends Thread {
         this.distanceMax = distanceMax;
     }
 
-    public static Point getDestination() {
-        return destination;
-    }
-
+    /**
+     * Cette fonction permet juste de faire des opérations qui prennent beaucoup de temps afin de ralentir l'IA des
+     * adversaires
+     */
     @Override
     public void run() {
         LinkedList l = new LinkedList();
@@ -45,7 +43,6 @@ public class Recherche extends Thread {
                         l.add(nb);
                     }
                 }
-                //System.out.println(distanceMax);
             }
         }
     }
