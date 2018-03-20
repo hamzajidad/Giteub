@@ -21,13 +21,13 @@ public class AreneSolo {
 
         MaitreDuJeu jeu = new MaitreDuJeu(p);
         jeu.metJoueurEnPosition(0, new MonJoueur2("MOI"));
-    /*
-        jeu.metJoueurEnPosition(1, new MonJoueur("Moi2"));
-        /*
-        jeu.metJoueurEnPosition(2, new MonJoueur("Moi3"));
 
-        jeu.metJoueurEnPosition(3, new MonJoueur("Moi4"));
-        */
+        jeu.metJoueurEnPosition(1, new MonJoueur3("Moi2"));
+
+        jeu.metJoueurEnPosition(2, new MonJoueur3("Moi3"));
+
+        jeu.metJoueurEnPosition(3, new MonJoueur3("Moi4"));
+
         FenetreDeJeu f = new FenetreDeJeu(jeu, true);
 
         f.addWindowListener( new WindowListener() {

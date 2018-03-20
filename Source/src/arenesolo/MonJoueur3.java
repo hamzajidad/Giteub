@@ -3,7 +3,6 @@
  */
 package arenesolo;
 
-import Thread.Recherche;
 import jeu.Joueur;
 import jeu.Plateau;
 import jeu.astar.Node;
@@ -12,28 +11,24 @@ import javax.management.NotificationBroadcasterSupport;
 import java.awt.*;
 import java.util.*;
 
-import static java.lang.Thread.MAX_PRIORITY;
-import static java.lang.Thread.MIN_PRIORITY;
-
-public class MonJoueur2 extends jeu.Joueur {
+public class MonJoueur3 extends jeu.Joueur {
     static Point POSITION_DEPART;
     static int NUMERO_JOUEUR;
     int NBsites=0;
-    static int tourDepart = 0;
-    Recherche tr;
-    Action a;
+    static int tourDepart=0;
 
     /**
      *  decrit le nom du joueur
      * @param nom
      */
-    public MonJoueur2(String nom) { super(nom); }
+    public MonJoueur3(String nom) { super(nom); }
 
     /**
      * decrit la couleur du joueur pour etre distingué des 3 autres
      * @param couleur
      */
     @Override
+
     protected void debutDePartie(int couleur) {
         System.out.println("La partie commence, je suis le joueur " + couleur + ".");
 
@@ -52,7 +47,7 @@ public class MonJoueur2 extends jeu.Joueur {
         ArrayList<Point>  sitesImportants =new ArrayList<Point>();
         for (Point s : sites) {
             if(estUnSiteImportant(etatDuJeu, s)){
-               sitesImportants.add(s);
+                sitesImportants.add(s);
             }
         }
         Point destination = TrouvePlusProche(etatDuJeu,currentposition, sitesImportants);
@@ -92,43 +87,28 @@ public class MonJoueur2 extends jeu.Joueur {
 
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
-        if(tourDepart == 0){
-            tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
-            tr.setPriority(MAX_PRIORITY);
+        if(tourDepart==0){
             System.out.println("Tour de départ !!!!");
             POSITION_DEPART = this.donnePosition();
             calculeNumeroJoueur(this.donneCouleur());
             tourDepart++;
         }
-        if (tourDepart != 0){
-            tr.interrupt();
-        }
         // thread de la mort cloque tout les autres joueurs priority high
-            Point currentposition = this.donnePosition();
-            System.out.println("current position : " + currentposition + ", position départ : " + POSITION_DEPART +" Nb site : " + NBsites);
-             //calcule le numero du joueur
+        Point currentposition = this.donnePosition();
+        System.out.println("current position : " + currentposition + ", position départ : " + POSITION_DEPART +" Nb site : " + NBsites);
+        //calcule le numero du joueur
 
-            if (currentposition == POSITION_DEPART){          // si on est retourné au départ - donc mort on recherche des sites
-                NBsites = 0;
-            }
+        if (currentposition == POSITION_DEPART){          // si on est retourné au départ - donc mort on recherche des sites
+            NBsites = 0;
+        }
+        if (this.donneSolde()<60){
+            return chercherPognon(etatDuJeu, currentposition);
+        }
 
-            if (NBsites < 2){                //sil il posse moins de deux sites alors il  cherche
-                a = chercherTresor(etatDuJeu, currentposition);
-                tr.setPriority(MAX_PRIORITY);//priorité maximale pour ralentir les autres joueurs
+        else{               //sil il posse moins de deux sites alors il  cherche
+            return chercherTresor(etatDuJeu, currentposition);
+        }
 
-            }
-            if (this.donneSolde()<60){
-                a = chercherPognon(etatDuJeu, currentposition);
-            }
-            else{
-                a = chercherBagarre(etatDuJeu,currentposition);
-            }
-            if (tourDepart != 0) {
-                tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
-                tr.setPriority(MAX_PRIORITY); //Mettre en priorité ce thread
-            }
-            tr.start();
-            return a;
     }
 
     private void calculeNumeroJoueur(String s) {
@@ -142,7 +122,7 @@ public class MonJoueur2 extends jeu.Joueur {
         int distance=9999;
         Point pointProche=null;
         for(Point p : points){
-            if(etatDuJeu.donneCheminEntre(currentposition, p).size() < distance){
+            if(etatDuJeu.donneCheminEntre(currentposition, p).size()<distance){
                 pointProche=p;
                 distance=etatDuJeu.donneCheminEntre(currentposition, p).size();
             }
@@ -160,7 +140,6 @@ public class MonJoueur2 extends jeu.Joueur {
 
     @Override
     protected void finDePartie(String lePlateau) {
-        System.out.println("Encore une belle victoire");
     }
     /**
      *
@@ -176,12 +155,12 @@ public class MonJoueur2 extends jeu.Joueur {
             nextpos = chemin.get(chemin.size() - 2); // 6,6
         }
         else {
-                nextpos = new Node(destination.x, destination.y);
-            }
-            if(nextpos.getPosX()>depart.x){
-                return Action.DROITE;
-            }
-            if(nextpos.getPosX()<depart.x){
+            nextpos = new Node(destination.x, destination.y);
+        }
+        if(nextpos.getPosX()>depart.x){
+            return Action.DROITE;
+        }
+        if(nextpos.getPosX()<depart.x){
             return Action.GAUCHE;
         }
         if(nextpos.getPosY()>depart.y){

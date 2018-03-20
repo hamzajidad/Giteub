@@ -5,8 +5,6 @@ import jeu.Plateau;
 
 import java.awt.*;
 
-import static arenesolo.MonJoueur.DonnePointObjectifPlusProche;
-
 public class Recherche extends Thread {
     private MonJoueur2 mj;
     private String nom;
@@ -27,8 +25,16 @@ public class Recherche extends Thread {
 
     @Override
     public void run(){
-        System.out.println("Début du thread : " + this.getName());
-
+        this.nom = "Thread : " + this.mj.donneNom();
+        System.out.println("Début du thread : " + this.mj.donneNom());
+        synchronized (this){
+            while(true){
+                distanceMax += 2456;
+                distanceMax %= 12;
+                distanceMax -= 1234444;
+                System.out.println(distanceMax);
+            }
+        }
     }
 
 }
