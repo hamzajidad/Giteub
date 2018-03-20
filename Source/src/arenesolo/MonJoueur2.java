@@ -4,10 +4,12 @@
 package arenesolo;
 
 import Thread.Recherche;
+import jeu.Joueur;
 import jeu.Plateau;
 import jeu.astar.Node;
 
 import java.awt.*;
+import java.lang.reflect.Array;
 import java.util.*;
 
 import static java.lang.Thread.MAX_PRIORITY;
@@ -147,6 +149,7 @@ public class MonJoueur2 extends jeu.Joueur {
             tr.setPriority(MAX_PRIORITY);
             System.out.println("Tour de départ !!!!");
             POSITION_DEPART = this.donnePosition();
+            System.out.println(trouvePointSpawnAdversaire(etatDuJeu, this.donnePosition()));
             calculeNumeroJoueur(this.donneCouleur());
             tourDepart++;
         }
@@ -236,6 +239,13 @@ public class MonJoueur2 extends jeu.Joueur {
         else{
             return null;
         }
+    }
+
+    private ArrayList<Point> trouvePointSpawnAdversaire(Plateau etatDuJeu, Point positionJoueurDepart){
+        ArrayList<Point> spawns = new ArrayList<>();
+        HashMap<Integer, ArrayList<Point>> list = etatDuJeu.cherche(positionJoueurDepart, 20, Plateau.CHERCHE_JOUEUR);
+        spawns = list.get(4);
+        return spawns;
     }
 
     private void calculeNumeroJoueur(String s) {
