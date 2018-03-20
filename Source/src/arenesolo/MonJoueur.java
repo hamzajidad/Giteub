@@ -3,6 +3,7 @@
  */
 package arenesolo;
 
+import jeu.Joueur;
 import jeu.Plateau;
 
 import java.awt.*;
@@ -18,13 +19,17 @@ import static jeu.Plateau.MASQUE_ENDROIT_SITE2;
 public class MonJoueur extends jeu.Joueur {
 
     /**
-     *  decrit le nom du joueur
+     * decrit le nom du joueur
+     *
      * @param nom
      */
-    public MonJoueur(String nom) { super(nom); }
+    public MonJoueur(String nom) {
+        super(nom);
+    }
 
     /**
      * decrit la couleur du joueur pour etre distingué des 3 autres
+     *
      * @param couleur
      */
     @Override
@@ -37,25 +42,26 @@ public class MonJoueur extends jeu.Joueur {
     /**
      * Parcours en spirale
      * le parcours en spirale pour decrire autour d'un point fixe (Point p) les objectives les plus proches.
-     * @param x0 position X initiale
-     * @param y0 position Y initiale
+     *
+     * @param x0          position X initiale
+     * @param y0          position Y initiale
      * @param distanceMax distance a parcourir
      */
     static public Point DonnePointObjectifPlusProche(Plateau etatdujeu, Point p, int distanceMax, Integer objectif) {
         //Recherche du temple le plus proche
-        int x0=p.x;
-        int y0=p.y;
-        System.out.println("current position = "+String.valueOf(x0)+" "+String.valueOf(y0));
+        int x0 = p.x;
+        int y0 = p.y;
+        System.out.println("current position = " + String.valueOf(x0) + " " + String.valueOf(y0));
         // directions possibles: G=(-1,0) H=(0,-1) D=(1,0) B=(0,1)
-        int[] dx = new int[] {-1,0,1,0};
-        int[] dy = new int[] {0,-1,0,1};
-        int dirIndex=0;
+        int[] dx = new int[]{-1, 0, 1, 0};
+        int[] dy = new int[]{0, -1, 0, 1};
+        int dirIndex = 0;
         // distance parcourue
-        int distance=0;
+        int distance = 0;
         // nombre de pas a faire
-        int stepToDo=1;
+        int stepToDo = 1;
         // position courante
-        int x=x0, y=y0;
+        int x = x0, y = y0;
         //System.out.println("Initial position: " +x+","+y);
         while (true) {
             // a faire 2 fois avec le meme nombre de pas (gauche+haut) ou (droite+bas)
@@ -64,20 +70,20 @@ public class MonJoueur extends jeu.Joueur {
                 for (int j = 0; j < stepToDo; j++) {
                     // condition de sortie
                     distance++;
-                    if(distance>distanceMax) return null;
+                    if (distance > distanceMax) return null;
                     // déplacement
-                    x+=dx[dirIndex];
-                    y+=dy[dirIndex];
+                    x += dx[dirIndex];
+                    y += dy[dirIndex];
                     //System.out.println("Current position: " +x+","+y+" distance="+distance+" contenu = "+etatdujeu.donneContenuCellule(x,y));
-                    int contenu=etatdujeu.donneContenuCellule(x,y);
-                    if((contenu & MASQUE_ENDROIT_SITE2) != 0){ // si la case scannee vaut la valeur objectif passée en parametre
+                    int contenu = etatdujeu.donneContenuCellule(x, y);
+                    if ((contenu & MASQUE_ENDROIT_SITE2) != 0) { // si la case scannee vaut la valeur objectif passée en parametre
                         /*
                         if(Plateau.donneProprietaireDuSite(contenu)!=Plateau.PRESENCE_JOUEUR1) {
                             System.out.println("Valeur du proprietraire "+String.valueOf(Plateau.donneProprietaireDuSite(contenu)));
                             return new Point(x, y);
                         }*/
-                        if(Plateau.donneProprietaireDuSite(contenu)!=1) {
-                            System.out.println("Valeur du proprietraire "+String.valueOf(Plateau.donneProprietaireDuSite(contenu)));
+                        if (Plateau.donneProprietaireDuSite(contenu) != 1) {
+                            System.out.println("Valeur du proprietraire " + String.valueOf(Plateau.donneProprietaireDuSite(contenu)));
                             return new Point(x, y);
                         }
                     }
@@ -92,42 +98,40 @@ public class MonJoueur extends jeu.Joueur {
     }
 
     /**
-     *
-     * @param etatDuJeu l'etat du jeu en cours
+     * @param etatDuJeu   l'etat du jeu en cours
      * @param destination la destination du joueur selectionné
-     * @param depart la position du départ
+     * @param depart      la position du départ
      * @return
      */
-    public Action prochaineDirectionVers(Plateau etatDuJeu, Point destination, Point depart){
-        ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination,depart);
+    public Action prochaineDirectionVers(Plateau etatDuJeu, Point destination, Point depart) {
+        ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination, depart);
         Node nextpos;
-        if(chemin.size()>1)
-            nextpos = chemin.get(chemin.size()-2); // 6,6
-        else nextpos= new Node(destination.x,destination.y);
-        System.out.println(" next position = "+nextpos.toString());
-        if(nextpos.getPosX()>depart.x){
+        if (chemin.size() > 1)
+            nextpos = chemin.get(chemin.size() - 2); // 6,6
+        else nextpos = new Node(destination.x, destination.y);
+        System.out.println(" next position = " + nextpos.toString());
+        if (nextpos.getPosX() > depart.x) {
             return Action.DROITE;
         }
-        if(nextpos.getPosX()<depart.x){
+        if (nextpos.getPosX() < depart.x) {
             return Action.GAUCHE;
         }
-        if(nextpos.getPosX()>depart.y){
+        if (nextpos.getPosX() > depart.y) {
             return Action.BAS;
         }
-        if(nextpos.getPosX()<depart.y){
+        if (nextpos.getPosX() < depart.y) {
             return Action.HAUT;
-        }
-        else {
-            int j =(int)(Math.random() * 6.0D);
+        } else {
+            int j = (int) (Math.random() * 6.0D);
 
-                if(j==1)
-                    return Action.GAUCHE;
-                if(j==2)
-                    return Action.DROITE;
-                if(j==3)
-                    return Action.HAUT;
-                else
-                    return Action.BAS;
+            if (j == 1)
+                return Action.GAUCHE;
+            if (j == 2)
+                return Action.DROITE;
+            if (j == 3)
+                return Action.HAUT;
+            else
+                return Action.BAS;
 
         }
     }
@@ -135,50 +139,47 @@ public class MonJoueur extends jeu.Joueur {
     // action
 
     /**
-     *
-     * @param etatDuJeu  on a en parametre l'état du jeu
+     * @param etatDuJeu on a en parametre l'état du jeu
      * @return ça retourne l'action en cours RIEN, GAUCHE, DROITE, HAUT, BAS
      */
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
         //mappage(etatDuJeu);
-        Point currentposition=this.donnePosition();
-        HashMap<Integer, ArrayList<Point>> positionJoueur = etatDuJeu.cherche(currentposition,20,Plateau.CHERCHE_JOUEUR);
-        HashMap<Integer, ArrayList<Point>> positionSiteFouille = etatDuJeu.cherche(currentposition,20,Plateau.CHERCHE_SITE);
-        HashMap<Integer, ArrayList<Point>> positionSiteFinance = etatDuJeu.cherche(currentposition,20,Plateau.CHERCHE_FINANCE);
+        Point currentposition = this.donnePosition();
+        HashMap<Integer, ArrayList<Point>> positionJoueur = etatDuJeu.cherche(currentposition, 20, Plateau.CHERCHE_JOUEUR);
+        HashMap<Integer, ArrayList<Point>> positionSiteFouille = etatDuJeu.cherche(currentposition, 20, Plateau.CHERCHE_SITE);
+        HashMap<Integer, ArrayList<Point>> positionSiteFinance = etatDuJeu.cherche(currentposition, 20, Plateau.CHERCHE_FINANCE);
         //System.out.println(etatDuJeu.cherche(currentposition,20,Plateau.CHERCHE_JOUEUR));
         Set<Integer> integer = positionJoueur.keySet();
-        for(Integer i : integer){
-            if(positionJoueur.get(i) != null)
-                System.out.println("Les joueurs :  "+i+" is: "+positionJoueur.get(i));
+        for (Integer i : integer) {
+            if (positionJoueur.get(i) != null)
+                System.out.println("Les joueurs :  " + i + " is: " + positionJoueur.get(i));
         }
 
         Set<Integer> intege = positionSiteFouille.keySet();
-        for(Integer i : intege){
-            if(positionSiteFouille.get(i) != null)
-                System.out.println("Site de fouille : "+i+" is: "+positionSiteFouille.get(i));
+        for (Integer i : intege) {
+            if (positionSiteFouille.get(i) != null)
+                System.out.println("Site de fouille : " + i + " is: " + positionSiteFouille.get(i));
         }
 
         Set<Integer> integ = positionSiteFinance.keySet();
-        for(Integer i : integ){
-            if(positionSiteFinance.get(i) != null)
-                System.out.println("Site finance :"+i+" is: "+positionSiteFinance.get(i));
+        for (Integer i : integ) {
+            if (positionSiteFinance.get(i) != null)
+                System.out.println("Site finance :" + i + " is: " + positionSiteFinance.get(i));
         }
-        Point destination = DonnePointObjectifPlusProche(etatDuJeu, currentposition,200, 65536); // se diriger vers un temple = 65536
-        System.out.println(" destination = "+destination.toString());
+        Point destination = DonnePointObjectifPlusProche(etatDuJeu, currentposition, 200, 65536); // se diriger vers un temple = 65536
+        System.out.println(" destination = " + destination.toString());
 
 
         System.out.println(Plateau.donneProprietaireDuSite(etatDuJeu.donneContenuCellule(destination)));
-        return prochaineDirectionVers(etatDuJeu, destination, currentposition );
+        return prochaineDirectionVers(etatDuJeu, destination, currentposition);
     }
     //commentaries
 
     /**
-     *
-     * @param lePlateau
-     *  Le Plateau est donnée en chaine de caractère en paramétre
-     * la findepartie c'est quand le nombre maximum de tours est réalisé.
-     *                   // Exception: Si deux joueurs ont le même nombre de points de notoriété, il n'y a pas de gagnant.
+     * @param lePlateau Le Plateau est donnée en chaine de caractère en paramétre
+     *                  la findepartie c'est quand le nombre maximum de tours est réalisé.
+     *                  // Exception: Si deux joueurs ont le même nombre de points de notoriété, il n'y a pas de gagnant.
      */
 
     @Override
@@ -196,12 +197,12 @@ public class MonJoueur extends jeu.Joueur {
     */
 
     /**
-     *partie teste case
+     * partie teste case
      */
-    public boolean estUnPointDepartAdverse(Plateau plateau,Point p) {
+    public boolean estUnPointDepartAdverse(Plateau plateau, Point p) {
         int contenu = plateau.donneContenuCellule(p);
         int numProprietairePointDepart = Plateau.donneProprietaireDuPointDeDepart(contenu);
-        int numMonJoueur = this.donneCouleurNumerique()+1;
+        int numMonJoueur = this.donneCouleurNumerique() + 1;
         return (numProprietairePointDepart > 0 && numProprietairePointDepart != numMonJoueur);
     }
 
@@ -211,7 +212,7 @@ public class MonJoueur extends jeu.Joueur {
 
     public boolean estUnSiteImportant(Plateau plateau, Point p) {
         int contenu = plateau.donneContenuCellule(p);
-        if(!Plateau.contientUnSite(contenu))
+        if (!Plateau.contientUnSite(contenu))
             return false;
         int typeSite = Plateau.donneTypeSites(contenu);
         return typeSite == 2;
@@ -219,7 +220,7 @@ public class MonJoueur extends jeu.Joueur {
 
     public boolean estUnSiteMoinsImportant(Plateau plateau, Point p) {
         int contenu = plateau.donneContenuCellule(p);
-        if(!Plateau.contientUnSite(contenu))
+        if (!Plateau.contientUnSite(contenu))
             return false;
         int typeSite = Plateau.donneTypeSites(contenu);
         return typeSite == 1;
@@ -227,10 +228,10 @@ public class MonJoueur extends jeu.Joueur {
 
     public boolean estUnSiteAbandonne(Plateau plateau, Point p) {
         int contenu = plateau.donneContenuCellule(p);
-        if(!Plateau.contientUnSite(contenu))
+        if (!Plateau.contientUnSite(contenu))
             return false;
-        return ( ( contenu & Plateau.MASQUE_ENDROIT_SITE1 ) == Plateau.ENDROIT_SITE1_ABANDONNE
-                || ( contenu & Plateau.MASQUE_ENDROIT_SITE2 ) == Plateau.ENDROIT_SITE2_ABANDONNE );
+        return ((contenu & Plateau.MASQUE_ENDROIT_SITE1) == Plateau.ENDROIT_SITE1_ABANDONNE
+                || (contenu & Plateau.MASQUE_ENDROIT_SITE2) == Plateau.ENDROIT_SITE2_ABANDONNE);
     }
 
     public boolean estUnCentreDeFinance(Plateau plateau, Point p) {
@@ -239,9 +240,10 @@ public class MonJoueur extends jeu.Joueur {
 
     public boolean existePresenceAdverse(Plateau plateau, Point p) {
         Joueur joueur = plateau.donneJoueurEnPosition(p);
-        return( joueur != null && this.equals(joueur) );
+        return (joueur != null && this.equals(joueur));
     }
 
-    public boolean aPlusDeNMilliers(Joueur joueur,int n) {
-        return joueur.donneSolde()>n;
+    public boolean aPlusDeNMilliers(Joueur joueur, int n) {
+        return joueur.donneSolde() > n;
     }
+}

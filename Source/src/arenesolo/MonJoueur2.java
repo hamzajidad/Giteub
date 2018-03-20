@@ -7,6 +7,7 @@ import jeu.Joueur;
 import jeu.Plateau;
 import jeu.astar.Node;
 
+import javax.management.NotificationBroadcasterSupport;
 import java.awt.*;
 import java.util.*;
 
@@ -14,6 +15,7 @@ public class MonJoueur2 extends jeu.Joueur {
     static Point POSITION_DEPART;
     static int NUMERO_JOUEUR;
     int NBsites=0;
+    static int tourDepart =0;
 
     /**
      *  decrit le nom du joueur
@@ -74,15 +76,21 @@ public class MonJoueur2 extends jeu.Joueur {
 
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
+        if(tourDepart == 0){
+            System.out.println("Tour de départ !!!!");
+            POSITION_DEPART =this.donnePosition();
+            tourDepart++;
+        }
         // thread de la mort cloque tout les autres joueurs priority high
             Point currentposition = this.donnePosition();
+            System.out.println("current position : " + currentposition + ", position départ : " + POSITION_DEPART +" Nb site : " + NBsites);
             calculeNumeroJoueur(this.donneCouleur()); //calcule le numero du joueur
 
-            if (currentposition==POSITION_DEPART){          // si on est retourné au départ - donc mort on recherche des sites
-                NBsites=0;
+            if (currentposition == POSITION_DEPART){          // si on est retourné au départ - donc mort on recherche des sites
+                NBsites = 0;
             }
 
-            if (NBsites<4){                //sil il posse moins de deux sites alors il  cherche
+            if (NBsites < 2){                //sil il posse moins de deux sites alors il  cherche
                 return chercherTresor(etatDuJeu,currentposition);
             }
             if(this.donneSolde()<60){
