@@ -140,7 +140,21 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     /**
-     * Fonction appellée par e maitre du jeu au debut de chaque tour
+     * Description fonction ici
+     *
+     * @param etatDuJeu on a en parametre l'état du jeu
+     * @return ça retourne l'action en cours RIEN, GAUCHE, DROITE, HAUT, BAS
+     */
+    private Action chercherCaseAutour(Plateau etatDuJeu, Point currentposition) {
+        Point autour = this.caseProcheContient(etatDuJeu,currentposition);
+        if(autour != null){
+            return prochainMouvementVers(etatDuJeu, autour, currentposition);
+        }
+        return null;
+    }
+
+    /**
+     * Description fonction ici
      *
      * @param etatDuJeu
      * @return
@@ -205,12 +219,12 @@ public class MonJoueur2 extends jeu.Joueur {
      */
     private Point caseProcheContient(Plateau etatDuJeu, Point currentposition) {
         HashMap<Integer, ArrayList<Point>> FouilleProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
-        HashMap<Integer, ArrayList<Point>> JoueurProches = new HashMap<>(); // cherche n'importe quel site, 1 ou 3 //
-        HashMap<Integer, ArrayList<Point>> FinanceProches= new HashMap<>();
+        HashMap<Integer, ArrayList<Point>> JoueurProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
+        HashMap<Integer, ArrayList<Point>> FinanceProches= etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_FINANCE);
         if(this.donneSolde()<60){
             FinanceProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_FINANCE);
         }
-        if(this.donneSolde()<60){
+        if(this.donneSolde()>40){
             JoueurProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_JOUEUR);
         }
 
@@ -219,7 +233,7 @@ public class MonJoueur2 extends jeu.Joueur {
         joueurs.remove(donnePosition());
         ArrayList<Point>  fouilles = FouilleProches.get(2);
 
-        if( finances.size()>0 || joueurs.size()>0 || fouilles.size()>0){
+        if( ( this.donneSolde()>40 && finances.size()>0  ) || (joueurs != null && joueurs.size()>0 && this.donneSolde()>40 ) || fouilles.size()>0){
             if(joueurs.size()>0){
                 int nbSite =0, nbSiteMax = 0;
 
