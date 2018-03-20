@@ -15,7 +15,7 @@ public class MonJoueur2 extends jeu.Joueur {
     static Point POSITION_DEPART;
     static int NUMERO_JOUEUR;
     int NBsites=0;
-    static int tourDepart =0;
+    static int tourDepart;
 
     /**
      *  decrit le nom du joueur
@@ -28,6 +28,7 @@ public class MonJoueur2 extends jeu.Joueur {
      * @param couleur
      */
     @Override
+
     protected void debutDePartie(int couleur) {
         System.out.println("La partie commence, je suis le joueur " + couleur + ".");
 
@@ -41,7 +42,7 @@ public class MonJoueur2 extends jeu.Joueur {
      * @return ça retourne l'action en cours RIEN, GAUCHE, DROITE, HAUT, BAS
      */
     public Action chercherTresor(Plateau etatDuJeu, Point currentposition){
-        HashMap<Integer, ArrayList<Point>> positionSitesFouille = etatDuJeu.cherche(currentposition, 200, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
+        HashMap<Integer, ArrayList<Point>> positionSitesFouille = etatDuJeu.cherche(currentposition, 50, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFouille.get(2);
         for (Point s : sites) {
             if(!estUnSiteImportant(etatDuJeu, s)){
@@ -91,7 +92,7 @@ public class MonJoueur2 extends jeu.Joueur {
 
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
-        if(tourDepart == 0){
+        if(tourDepart==0){
             System.out.println("Tour de départ !!!!");
             POSITION_DEPART = this.donnePosition();
             calculeNumeroJoueur(this.donneCouleur());
@@ -110,10 +111,11 @@ public class MonJoueur2 extends jeu.Joueur {
                 return chercherTresor(etatDuJeu, currentposition);
             }
             if (this.donneSolde()<60){
-                chercherPognon(etatDuJeu, currentposition);
+                return chercherPognon(etatDuJeu, currentposition);
             }
-        System.out.println("ATTENTION DEPLACEMENT RANDOM ");
-            return super.faitUneAction(etatDuJeu);
+            else{
+                return chercherBagarre(etatDuJeu,currentposition);
+            }
     }
 
     private void calculeNumeroJoueur(String s) {
