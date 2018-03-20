@@ -125,7 +125,7 @@ public class MonJoueur2 extends jeu.Joueur {
             }
             if (tourDepart != 0) {
                 tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
-                tr.setPriority(MAX_PRIORITY);
+                tr.setPriority(MAX_PRIORITY); //Mettre en priorité ce thread
             }
             tr.start();
             return a;
