@@ -207,7 +207,7 @@ public class MonJoueur extends jeu.Joueur {
     }
 
     public boolean estUnSiteAdverse(Plateau plateau, Point p) {
-        return Plateau.contientUnSiteQuiNeLuiAppartientPas(this, plateau.donneContenuCellule(p));
+        return (  !estUnSiteAbandonne(plateau,p) && Plateau.contientUnSiteQuiNeLuiAppartientPas(this, plateau.donneContenuCellule(p)));
     }
 
     public boolean estUnSiteImportant(Plateau plateau, Point p) {
