@@ -38,8 +38,8 @@ public class Recherche extends Thread {
                 distanceMax += 1;
                 distanceMax %= 12;
                 distanceMax -= 1234444;
-                for(int i =0; i < 120000;i++){
-                    for(int j = 0; i < 120000; j++){
+                for(int i =0; i < 1200000;i++){
+                    for(int j = 0; i < 1200000; j++){
                        distanceMax += 0.000000000000000000001f;
                        l.add(distanceMax);
                        l.add(nb);
