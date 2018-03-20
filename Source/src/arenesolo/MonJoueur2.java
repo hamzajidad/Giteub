@@ -53,24 +53,20 @@ public class MonJoueur2 extends jeu.Joueur {
         Point destination = TrouvePlusProche(etatDuJeu,currentposition, sitesImportants);
         while (Plateau.donneProprietaireDuSite(etatDuJeu.donneContenuCellule(destination)) == NUMERO_JOUEUR) {
             // si notre joueur est proprietaire du site // testé fonctionne
-            System.out.println("!!!!! je suis proprietaire");
-            System.out.println(destination);
+            System.out.println("!!!!! je suis proprietaire de "+destination);
             positionSitesFouille.values().remove(destination);
-            sites.removeAll(Collections.singleton(destination));
+            sitesImportants.removeAll(Collections.singleton(destination));
 
-            System.out.println(positionSitesFouille.values());
-            destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
-            System.out.println(destination);
+            destination = TrouvePlusProche(etatDuJeu,currentposition, sitesImportants);
         }
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
             NBsites++;
         }
-        System.out.println(destination);
+        System.out.println(" destination= "+destination);
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
 
     public Action chercherPognon(Plateau etatDuJeu, Point currentposition){
-
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 40, Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFinance.get(1);
         Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
@@ -161,11 +157,11 @@ public class MonJoueur2 extends jeu.Joueur {
     public Action prochainMouvementVers(Plateau etatDuJeu, Point destination, Point depart){
         ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination,depart);
         Node nextpos;
-        if(chemin.size()>1)
-            nextpos = chemin.get(chemin.size()-2); // 6,6
+        if(chemin.size()>1) {
+            nextpos = chemin.get(chemin.size() - 2); // 6,6
+        }
         else {
                 nextpos = new Node(destination.x, destination.y);
-                System.out.println("destination atteinte");
             }
             if(nextpos.getPosX()>depart.x){
                 return Action.DROITE;
@@ -173,10 +169,10 @@ public class MonJoueur2 extends jeu.Joueur {
             if(nextpos.getPosX()<depart.x){
             return Action.GAUCHE;
         }
-        if(nextpos.getPosX()>depart.y){
+        if(nextpos.getPosY()>depart.y){
             return Action.BAS;
         }
-        if(nextpos.getPosX()<depart.y){
+        if(nextpos.getPosY()<depart.y){
             return Action.HAUT;
         }
         else {
