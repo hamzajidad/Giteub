@@ -9,16 +9,16 @@ import java.util.Collections;
 import java.util.HashMap;
 
 public class MonJoueur4 extends jeu.Joueur {
-    static Point POSITION_DEPART;
-    static int NUMERO_JOUEUR;
-    int NBsites=0;
-    static int tourDepart=0;
+    private static Point POSITION_DEPART;
+    private static int NUMERO_JOUEUR;
+    private int NBsites=0;
+    private static int tourDepart=0;
 
     /**
      *  decrit le nom du joueur
      * @param nom
      */
-    public MonJoueur4(String nom) { super(nom); }
+    MonJoueur4(String nom) { super(nom); }
 
     /**
      * decrit la couleur du joueur pour etre distingué des 3 autres
@@ -41,7 +41,7 @@ public class MonJoueur4 extends jeu.Joueur {
     public Action chercherTresor(Plateau etatDuJeu, Point currentposition){
         HashMap<Integer, ArrayList<Point>> positionSitesFouille = etatDuJeu.cherche(currentposition, 50, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFouille.get(2);
-        ArrayList<Point>  sitesImportants =new ArrayList<Point>();
+        ArrayList<Point>  sitesImportants =new ArrayList<>();
         for (Point s : sites) {
             if(estUnSiteImportant(etatDuJeu, s)){
                 sitesImportants.add(s);
@@ -60,7 +60,7 @@ public class MonJoueur4 extends jeu.Joueur {
         System.out.println(" destination= "+destination);
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
-    public Action chercherPognon(Plateau etatDuJeu, Point currentposition){
+    private Action chercherPognon(Plateau etatDuJeu, Point currentposition){
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 40, Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFinance.get(1);
         Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
@@ -70,7 +70,7 @@ public class MonJoueur4 extends jeu.Joueur {
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
 
-    public Action chercherBagarre(Plateau etatDuJeu, Point currentposition){
+    private Action chercherBagarre(Plateau etatDuJeu, Point currentposition){
 
         HashMap<Integer, ArrayList<Point>> positionsJoueur = etatDuJeu.cherche(currentposition, etatDuJeu.donneTaille(), Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  joueurs = positionsJoueur.get(4);
@@ -151,7 +151,7 @@ public class MonJoueur4 extends jeu.Joueur {
      * @param depart la position du départ
      * @return
      */
-    public Action prochainMouvementVers(Plateau etatDuJeu, Point destination, Point depart){
+    private Action prochainMouvementVers(Plateau etatDuJeu, Point destination, Point depart){
         ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination,depart);
         Node nextpos;
         if(chemin.size()>1) {
@@ -187,7 +187,7 @@ public class MonJoueur4 extends jeu.Joueur {
         }
     }
 
-    public boolean estUnSiteImportant(Plateau plateau, Point p) {
+    private boolean estUnSiteImportant(Plateau plateau, Point p) {
         int contenu = plateau.donneContenuCellule(p);
         if (!Plateau.contientUnSite(contenu))
             return false;

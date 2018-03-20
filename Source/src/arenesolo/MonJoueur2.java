@@ -4,32 +4,28 @@
 package arenesolo;
 
 import Thread.Recherche;
-import jeu.Joueur;
 import jeu.Plateau;
 import jeu.astar.Node;
-
-import javax.management.NotificationBroadcasterSupport;
 import java.awt.*;
-import java.sql.Time;
 import java.util.*;
 
 import static java.lang.Thread.MAX_PRIORITY;
 
 public class MonJoueur2 extends jeu.Joueur {
-    static Point POSITION_DEPART;
-    static int NUMERO_JOUEUR;
-    int NBsites=0;
-    static int tourDepart = 0;
-    Recherche tr;
-    Action a;
-    long t;
+    private static Point POSITION_DEPART;
+    private static int NUMERO_JOUEUR;
+    private int NBsites=0;
+    private static int tourDepart = 0;
+    private Recherche tr;
+    private Action a;
+    private long t;
 
 
     /**
      *  decrit le nom du joueur
      * @param nom
      */
-    public MonJoueur2(String nom) { super(nom); }
+    MonJoueur2(String nom) { super(nom); }
 
     /**
      * decrit la couleur du joueur pour etre distingué des 3 autres
@@ -48,10 +44,10 @@ public class MonJoueur2 extends jeu.Joueur {
      * @param etatDuJeu  on a en parametre l'état du jeu
      * @return ça retourne l'action en cours RIEN, GAUCHE, DROITE, HAUT, BAS
      */
-    public Action chercherTresor(Plateau etatDuJeu, Point currentposition){
+    private Action chercherTresor(Plateau etatDuJeu, Point currentposition){
         HashMap<Integer, ArrayList<Point>> positionSitesFouille = etatDuJeu.cherche(currentposition, 50, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFouille.get(2);
-        ArrayList<Point>  sitesImportants =new ArrayList<Point>();
+        ArrayList<Point>  sitesImportants =new ArrayList<>();
         for (Point s : sites) {
             if(estUnSiteImportant(etatDuJeu, s)){
                sitesImportants.add(s);
@@ -70,7 +66,7 @@ public class MonJoueur2 extends jeu.Joueur {
         System.out.println(" destination = "+destination.toString());
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
-    public Action chercherPognon(Plateau etatDuJeu, Point currentposition){
+    private Action chercherPognon(Plateau etatDuJeu, Point currentposition){
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 20, Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFinance.get(1);
         Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
@@ -80,7 +76,7 @@ public class MonJoueur2 extends jeu.Joueur {
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
 
-    public Action chercherBagarre(Plateau etatDuJeu, Point currentposition){
+    private Action chercherBagarre(Plateau etatDuJeu, Point currentposition){
 
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 20, Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFinance.get(4);
@@ -97,7 +93,7 @@ public class MonJoueur2 extends jeu.Joueur {
         t = System.currentTimeMillis();
         if (tourDepart != 0){
             tr.interrupt();
-            tr.stop();
+            tr.stop(); //deprecated
         }
         if(tourDepart == 0){
             tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
@@ -123,7 +119,6 @@ public class MonJoueur2 extends jeu.Joueur {
                 a = chercherTresor(etatDuJeu, currentposition);
 
             }
-
             else{
                 a = chercherBagarre(etatDuJeu,currentposition);
             }
@@ -176,7 +171,7 @@ public class MonJoueur2 extends jeu.Joueur {
      * @param depart la position du départ
      * @return
      */
-    public Action prochainMouvementVers(Plateau etatDuJeu, Point destination, Point depart){
+    private Action prochainMouvementVers(Plateau etatDuJeu, Point destination, Point depart){
         ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination,depart);
         Node nextpos;
         if(chemin.size()>1) {
@@ -211,7 +206,7 @@ public class MonJoueur2 extends jeu.Joueur {
         }
     }
 
-    public boolean estUnSiteImportant(Plateau plateau, Point p) {
+    private boolean estUnSiteImportant(Plateau plateau, Point p) {
         int contenu = plateau.donneContenuCellule(p);
         if (!Plateau.contientUnSite(contenu))
             return false;

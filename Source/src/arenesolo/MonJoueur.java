@@ -7,7 +7,6 @@ import jeu.Joueur;
 import jeu.Plateau;
 
 import java.awt.*;
-import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
@@ -47,7 +46,7 @@ public class MonJoueur extends jeu.Joueur {
      * @param y0          position Y initiale
      * @param distanceMax distance a parcourir
      */
-    static public Point DonnePointObjectifPlusProche(Plateau etatdujeu, Point p, int distanceMax, Integer objectif) {
+    private static Point DonnePointObjectifPlusProche(Plateau etatdujeu, Point p, int distanceMax, Integer objectif) {
         //Recherche du temple le plus proche
         int x0 = p.x;
         int y0 = p.y;
@@ -103,7 +102,7 @@ public class MonJoueur extends jeu.Joueur {
      * @param depart      la position du départ
      * @return
      */
-    public Action prochaineDirectionVers(Plateau etatDuJeu, Point destination, Point depart) {
+    private Action prochaineDirectionVers(Plateau etatDuJeu, Point destination, Point depart) {
         ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination, depart);
         Node nextpos;
         if (chemin.size() > 1)
@@ -168,6 +167,7 @@ public class MonJoueur extends jeu.Joueur {
                 System.out.println("Site finance :" + i + " is: " + positionSiteFinance.get(i));
         }
         Point destination = DonnePointObjectifPlusProche(etatDuJeu, currentposition, 200, 65536); // se diriger vers un temple = 65536
+        assert destination != null;
         System.out.println(" destination = " + destination.toString());
 
 
@@ -195,10 +195,6 @@ public class MonJoueur extends jeu.Joueur {
         etatDuJeu.donneContenuCellule(p);
     }
     */
-
-    /**
-     * partie teste case
-     */
 
     /**
      *
@@ -257,12 +253,9 @@ public class MonJoueur extends jeu.Joueur {
      * @param p le point p
      * @return Ca vérifie si le site est abandoné ou pas
      */
-    public boolean estUnSiteAbandonne(Plateau plateau, Point p) {
+    private boolean estUnSiteAbandonne(Plateau plateau, Point p) {
         int contenu = plateau.donneContenuCellule(p);
-        if (!Plateau.contientUnSite(contenu))
-            return false;
-        return ((contenu & Plateau.MASQUE_ENDROIT_SITE1) == Plateau.ENDROIT_SITE1_ABANDONNE
-                || (contenu & Plateau.MASQUE_ENDROIT_SITE2) == Plateau.ENDROIT_SITE2_ABANDONNE);
+        return Plateau.contientUnSite(contenu) && ((contenu & Plateau.MASQUE_ENDROIT_SITE1) == Plateau.ENDROIT_SITE1_ABANDONNE || (contenu & Plateau.MASQUE_ENDROIT_SITE2) == Plateau.ENDROIT_SITE2_ABANDONNE);
     }
 
     /**

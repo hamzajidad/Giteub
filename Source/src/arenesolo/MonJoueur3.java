@@ -6,24 +6,20 @@ package arenesolo;
 import jeu.Joueur;
 import jeu.Plateau;
 import jeu.astar.Node;
-
-import javax.management.NotificationBroadcasterSupport;
 import java.awt.*;
 import java.util.*;
 
 public class MonJoueur3 extends jeu.Joueur {
-    static Point POSITION_DEPART;
-    static int NUMERO_JOUEUR;
-    int NBsites=0;
-    static int tourDepart=0;
-    long t;
+    private static Point POSITION_DEPART;
+    private static int NUMERO_JOUEUR;
+    private static int tourDepart=0;
     Action a;
 
     /**
      *  decrit le nom du joueur
      * @param nom
      */
-    public MonJoueur3(String nom) { super(nom); }
+    MonJoueur3(String nom) { super(nom); }
 
     /**
      * decrit la couleur du joueur pour etre distingué des 3 autres
@@ -43,10 +39,10 @@ public class MonJoueur3 extends jeu.Joueur {
      * @param etatDuJeu  on a en parametre l'état du jeu
      * @return ça retourne l'action en cours RIEN, GAUCHE, DROITE, HAUT, BAS
      */
-    public Action chercherTresor(Plateau etatDuJeu, Point currentposition){
+    private Action chercherTresor(Plateau etatDuJeu, Point currentposition){
         HashMap<Integer, ArrayList<Point>> positionSitesFouille = etatDuJeu.cherche(currentposition, 50, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFouille.get(2);
-        ArrayList<Point>  sitesImportants =new ArrayList<Point>();
+        ArrayList<Point>  sitesImportants =new ArrayList<>();
         for (Point s : sites) {
             if(estUnSiteImportant(etatDuJeu, s)){
                 sitesImportants.add(s);
@@ -59,13 +55,11 @@ public class MonJoueur3 extends jeu.Joueur {
             positionSitesFouille.values().remove(destination);
             sitesImportants.removeAll(Collections.singleton(destination));
             destination = TrouvePlusProche(etatDuJeu,currentposition, sitesImportants);        }
-        if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
-            NBsites++;
-        }
+
         System.out.println(" destination= "+destination);
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
-    public Action chercherPognon(Plateau etatDuJeu, Point currentposition){
+    private Action chercherPognon(Plateau etatDuJeu, Point currentposition){
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 40, Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFinance.get(1);
         Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
@@ -80,16 +74,13 @@ public class MonJoueur3 extends jeu.Joueur {
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 40, Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFinance.get(4);
         Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
-        if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
-            //chercherPognon = false;
-        }
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
     }
 
 
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
-        t = System.currentTimeMillis();
+        long t = System.currentTimeMillis();
         Action a;
         System.out.println("Timer task started at:"+new Date());
         if(tourDepart==0){
@@ -102,9 +93,6 @@ public class MonJoueur3 extends jeu.Joueur {
         Point currentposition = this.donnePosition();
         //calcule le numero du joueur
 
-        if (currentposition == POSITION_DEPART){          // si on est retourné au départ - donc mort on recherche des sites
-            NBsites = 0;
-        }
         if (this.donneSolde()<60){
             a= chercherPognon(etatDuJeu, currentposition);
         }
@@ -153,7 +141,7 @@ public class MonJoueur3 extends jeu.Joueur {
      * @param depart la position du départ
      * @return
      */
-    public Action prochainMouvementVers(Plateau etatDuJeu, Point destination, Point depart){
+    private Action prochainMouvementVers(Plateau etatDuJeu, Point destination, Point depart){
         ArrayList<Node> chemin = etatDuJeu.donneCheminEntre(destination,depart);
         Node nextpos;
         if(chemin.size()>1) {
@@ -188,7 +176,7 @@ public class MonJoueur3 extends jeu.Joueur {
         }
     }
 
-    public boolean estUnSiteImportant(Plateau plateau, Point p) {
+    private boolean estUnSiteImportant(Plateau plateau, Point p) {
         int contenu = plateau.donneContenuCellule(p);
         if (!Plateau.contientUnSite(contenu))
             return false;
@@ -238,12 +226,9 @@ public class MonJoueur3 extends jeu.Joueur {
      * @param p le point p
      * @return Ca vérifie si le site est abandoné ou pas
      */
-    public boolean estUnSiteAbandonne(Plateau plateau, Point p) {
+    private boolean estUnSiteAbandonne(Plateau plateau, Point p) {
         int contenu = plateau.donneContenuCellule(p);
-        if (!Plateau.contientUnSite(contenu))
-            return false;
-        return ((contenu & Plateau.MASQUE_ENDROIT_SITE1) == Plateau.ENDROIT_SITE1_ABANDONNE
-                || (contenu & Plateau.MASQUE_ENDROIT_SITE2) == Plateau.ENDROIT_SITE2_ABANDONNE);
+        return Plateau.contientUnSite(contenu) && ((contenu & Plateau.MASQUE_ENDROIT_SITE1) == Plateau.ENDROIT_SITE1_ABANDONNE || (contenu & Plateau.MASQUE_ENDROIT_SITE2) == Plateau.ENDROIT_SITE2_ABANDONNE);
     }
 
     /**
