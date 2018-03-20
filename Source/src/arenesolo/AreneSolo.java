@@ -16,6 +16,7 @@ import jeu.astar.Node;
 public class AreneSolo {
 
     public static void main(String[] args) {
+        System.out.println("test");
         Plateau p = new Plateau( 1200, MaitreDuJeu.PLATEAU_PAR_DEFAUT);
 
         MaitreDuJeu jeu = new MaitreDuJeu(p);

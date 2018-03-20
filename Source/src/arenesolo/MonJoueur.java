@@ -246,4 +246,6 @@ public class MonJoueur extends jeu.Joueur {
     public boolean aPlusDeNMilliers(Joueur joueur, int n) {
         return joueur.donneSolde() > n;
     }
+
+
 }
