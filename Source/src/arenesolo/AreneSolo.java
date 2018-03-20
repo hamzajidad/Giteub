@@ -20,7 +20,7 @@ public class AreneSolo {
         Plateau p = new Plateau( 1200, MaitreDuJeu.PLATEAU_PAR_DEFAUT);
 
         MaitreDuJeu jeu = new MaitreDuJeu(p);
-        jeu.metJoueurEnPosition(0, new MonJoueur2("MOI"));
+        jeu.metJoueurEnPosition(0, new MonJoueur2(" MOI "));
 
         jeu.metJoueurEnPosition(1, new MonJoueur3("Moi2"));
 
