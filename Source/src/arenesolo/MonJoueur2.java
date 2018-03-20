@@ -3,19 +3,21 @@
  */
 package arenesolo;
 
+import Thread.Recherche;
 import jeu.Joueur;
 import jeu.Plateau;
 import jeu.astar.Node;
 
-import javax.management.NotificationBroadcasterSupport;
 import java.awt.*;
 import java.util.*;
+
+import static java.lang.Thread.MIN_PRIORITY;
 
 public class MonJoueur2 extends jeu.Joueur {
     static Point POSITION_DEPART;
     static int NUMERO_JOUEUR;
     int NBsites=0;
-    static int tourDepart;
+    static int tourDepart = 0;
 
     /**
      *  decrit le nom du joueur
@@ -28,7 +30,6 @@ public class MonJoueur2 extends jeu.Joueur {
      * @param couleur
      */
     @Override
-
     protected void debutDePartie(int couleur) {
         System.out.println("La partie commence, je suis le joueur " + couleur + ".");
 
@@ -92,7 +93,10 @@ public class MonJoueur2 extends jeu.Joueur {
 
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
-        if(tourDepart==0){
+        if(tourDepart == 0){
+            Recherche tr = new Recherche(this, this.donneNom(),etatDuJeu,20);
+            tr.setPriority(MIN_PRIORITY);//priorité minimale
+            tr.start();
             System.out.println("Tour de départ !!!!");
             POSITION_DEPART = this.donnePosition();
             calculeNumeroJoueur(this.donneCouleur());
