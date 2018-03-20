@@ -45,7 +45,7 @@ public class MonJoueur2 extends jeu.Joueur {
         HashMap<Integer, ArrayList<Point>> positionSitesFouille = etatDuJeu.cherche(currentposition, 200, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFouille.get(2);
 
-        Point destination = TrouvePlusProche(currentposition, sites);
+        Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
         while (Plateau.donneProprietaireDuSite(etatDuJeu.donneContenuCellule(destination)) == NUMERO_JOUEUR) {
             // si notre joueur est proprietaire du site // testé fonctionne
             System.out.println("!!!!! je suis proprietaire");
@@ -54,7 +54,7 @@ public class MonJoueur2 extends jeu.Joueur {
             sites.removeAll(Collections.singleton(destination));
 
             System.out.println(positionSitesFouille.values());
-            destination = TrouvePlusProche(currentposition, sites);
+            destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
             System.out.println(destination);
         }
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
@@ -66,7 +66,17 @@ public class MonJoueur2 extends jeu.Joueur {
 
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 40, Plateau.CHERCHE_FINANCE); // cherche n'importe quel site, 1 ou 3 //
         ArrayList<Point>  sites = positionSitesFinance.get(1);
-        Point destination = TrouvePlusProche(currentposition, sites);
+        Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
+        if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
+            //chercherPognon = false;
+        }
+        return prochainMouvementVers(etatDuJeu, destination, currentposition);
+    }
+    public Action chercherBagarre(Plateau etatDuJeu, Point currentposition){
+
+        HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 40, Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
+        ArrayList<Point>  sites = positionSitesFinance.get(4);
+        Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
             //chercherPognon = false;
         }
@@ -96,7 +106,7 @@ public class MonJoueur2 extends jeu.Joueur {
             if(this.donneSolde()<60){
                 chercherPognon(etatDuJeu,currentposition);
             }
-        System.out.println(" DEPLACEMENT RANDOM ");
+        System.out.println("ATTENTION DEPLACEMENT RANDOM ");
             return super.faitUneAction(etatDuJeu);
     }
 
@@ -108,11 +118,9 @@ public class MonJoueur2 extends jeu.Joueur {
     }
 
     private Point TrouvePlusProche(Plateau etatDuJeu,Point currentposition,ArrayList<Point> points) {
-
         int distance=9999;
         Point pointProche=null;
         for(Point p : points){
-
             if(etatDuJeu.donneCheminEntre(currentposition, p).size()<distance){
                 pointProche=p;
                 distance=etatDuJeu.donneCheminEntre(currentposition, p).size();
@@ -147,7 +155,6 @@ public class MonJoueur2 extends jeu.Joueur {
             nextpos = chemin.get(chemin.size()-2); // 6,6
         else {
                 nextpos = new Node(destination.x, destination.y);
-                destination=null;
                 System.out.println("destination atteinte");
             }
             if(nextpos.getPosX()>depart.x){
