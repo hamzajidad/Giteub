@@ -121,12 +121,26 @@ public class MonJoueur2 extends jeu.Joueur {
     private Action chercherBagarre(Plateau etatDuJeu, Point currentposition) {
 
         HashMap<Integer, ArrayList<Point>> positionSitesFinance = etatDuJeu.cherche(currentposition, 20, Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
-        ArrayList<Point> sites = positionSitesFinance.get(4);
-        Point destination = TrouvePlusProche(etatDuJeu, currentposition, sites);
+        ArrayList<Point>  sites = positionSitesFinance.get(4);
+        Point destination = TrouvePlusProche(etatDuJeu,currentposition, sites);
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
             System.out.println(" prend ça !");
         }
         return prochainMouvementVers(etatDuJeu, destination, currentposition);
+    }
+
+    /**
+     * Description fonction ici
+     *
+     * @param etatDuJeu on a en parametre l'état du jeu
+     * @return ça retourne l'action en cours RIEN, GAUCHE, DROITE, HAUT, BAS
+     */
+    private Action chercherCaseAutour(Plateau etatDuJeu, Point currentposition) {
+        Point autour = this.caseProcheContient(etatDuJeu,currentposition);
+        if(autour != null){
+            return prochainMouvementVers(etatDuJeu, autour, currentposition);
+        }
+        return null;
     }
 
     /**
@@ -162,22 +176,31 @@ public class MonJoueur2 extends jeu.Joueur {
         if (this.donneSolde() < 40) {
             a = chercherPognon(etatDuJeu, currentposition);
         }
-        if (NBsites < 2) {                //sil il posse moins de deux sites alors il  cherche
-            a = chercherTresor(etatDuJeu, currentposition);
 
+
+        if (NBsites < 3) {                //sil il posse moins de deux sites alors il  cherche
+            a = chercherTresor(etatDuJeu, currentposition);
         } else {
+
             a = chercherBagarre(etatDuJeu, currentposition);
         }
+        Action actionAutour = this.chercherCaseAutour(etatDuJeu, currentposition);
+        if( actionAutour!= null){
+            a = actionAutour;
+        }
+
         if (tourDepart != 0) {
             tr = new Recherche(this, this.donneNom(), etatDuJeu, 20);
             tr.setPriority(MAX_PRIORITY); //Mettre en priorité ce thread
         }
 
-        tr.start();
+       /// tr.start();
         long t1 = System.currentTimeMillis();
         System.out.println("temps :" + (t1 - t));
+
         return a;
     }
+
 
     /**
      * Description fonction ici
@@ -186,12 +209,12 @@ public class MonJoueur2 extends jeu.Joueur {
      */
     private Point caseProcheContient(Plateau etatDuJeu, Point currentposition) {
         HashMap<Integer, ArrayList<Point>> FouilleProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
-        HashMap<Integer, ArrayList<Point>> JoueurProches = new HashMap<>(); // cherche n'importe quel site, 1 ou 3 //
-        HashMap<Integer, ArrayList<Point>> FinanceProches= new HashMap<>();
+        HashMap<Integer, ArrayList<Point>> JoueurProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
+        HashMap<Integer, ArrayList<Point>> FinanceProches= etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_FINANCE);
         if(this.donneSolde()<60){
             FinanceProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_FINANCE);
         }
-        if(this.donneSolde()<60){
+        if(this.donneSolde()>40){
             JoueurProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_JOUEUR);
         }
 
@@ -200,7 +223,7 @@ public class MonJoueur2 extends jeu.Joueur {
         joueurs.remove(donnePosition());
         ArrayList<Point>  fouilles = FouilleProches.get(2);
 
-        if( finances.size()>0 || joueurs.size()>0 || fouilles.size()>0){
+        if( ( this.donneSolde()>40 && finances.size()>0  ) || (joueurs != null && joueurs.size()>0 && this.donneSolde()>40 ) || fouilles.size()>0){
             if(joueurs.size()>0){
                 int nbSite =0, nbSiteMax = 0;
 
