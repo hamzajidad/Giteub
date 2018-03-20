@@ -143,7 +143,7 @@ public class MonJoueur2 extends jeu.Joueur {
             destination= TrouvePlusProche(etatDuJeu, currentposition, joueurs);
         }
 
-        System.out.println("------------------->MOI: Joueur Proche = " + destination);
+        System.out.println("MOI: Joueur Proche = " + destination);
         if (etatDuJeu.donneCheminEntre(destination, currentposition).size() == 1) {
             System.out.println("Bagarre trouvé");
         }
@@ -197,24 +197,24 @@ public class MonJoueur2 extends jeu.Joueur {
         if (this.donneSolde() < 40) {
             a = chercherPognon(etatDuJeu, currentposition);
         }
+        else{
+            if (NBsites < 2) {                //sil il posse moins de deux sites alors il  cherche
+                a = chercherTresor(etatDuJeu, currentposition);
+
+            } else {
+                a = chercherBagarre(etatDuJeu, currentposition);
+            }
+        }
 
         Action actionAutour = this.chercherCaseAutour(etatDuJeu, currentposition);
         if( actionAutour!= null){
             return actionAutour;
         }
-
-        if (NBsites < 2) {                //sil il posse moins de deux sites alors il  cherche
-            a = chercherTresor(etatDuJeu, currentposition);
-
-        } else {
-            a = chercherBagarre(etatDuJeu, currentposition);
-        }
-
         if (tourDepart != 0) {
             tr = new Recherche(this, this.donneNom(), etatDuJeu, 20);
             tr.setPriority(MAX_PRIORITY); //Mettre en priorité ce thread
         }
-
+        //pour lancer le thread ralentisseur
         tr.start();
         long t1 = System.currentTimeMillis();
         System.out.println("temps :" + (t1 - t));
@@ -235,19 +235,19 @@ public class MonJoueur2 extends jeu.Joueur {
         HashMap<Integer, ArrayList<Point>> FouilleProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_SITE); // cherche n'importe quel site, 1 ou 3 //
         HashMap<Integer, ArrayList<Point>> JoueurProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_JOUEUR); // cherche n'importe quel site, 1 ou 3 //
         HashMap<Integer, ArrayList<Point>> FinanceProches= etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_FINANCE);
-        if(this.donneSolde()<60){
+        /*if(this.donneSolde()<60){
             FinanceProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_FINANCE);
         }
         if(this.donneSolde()>40){
             JoueurProches = etatDuJeu.cherche(currentposition, 1, Plateau.CHERCHE_JOUEUR);
-        }
+        }*/
 
         ArrayList<Point>  finances = FinanceProches.get(1);
         ArrayList<Point>  joueurs = JoueurProches.get(4);
         joueurs.remove(donnePosition());
         ArrayList<Point>  fouilles = FouilleProches.get(2);
 
-        if(this.donneSolde() > 40 && finances.size() > 0 || joueurs.size() > 0 && this.donneSolde() > 40 || fouilles.size() > 0){
+        if( (this.donneSolde() <60 && finances.size() > 0) || (joueurs.size() > 0 && this.donneSolde() > 40) || fouilles.size() > 0){
             if(joueurs.size()>0){
                 int nbSite, nbSiteMax = 0;
 
