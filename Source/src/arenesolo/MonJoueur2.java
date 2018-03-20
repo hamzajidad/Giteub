@@ -95,6 +95,10 @@ public class MonJoueur2 extends jeu.Joueur {
     @Override
     public Action faitUneAction(Plateau etatDuJeu) {
         t = System.currentTimeMillis();
+        if (tourDepart != 0){
+            tr.interrupt();
+            tr.stop();
+        }
         if(tourDepart == 0){
             tr = new Recherche(this, this.donneNom(), etatDuJeu,20);
             tr.setPriority(MAX_PRIORITY);
@@ -103,10 +107,7 @@ public class MonJoueur2 extends jeu.Joueur {
             calculeNumeroJoueur(this.donneCouleur());
             tourDepart++;
         }
-        if (tourDepart != 0){
-            tr.interrupt();
-            tr.stop();
-        }
+
         // thread de la mort cloque tout les autres joueurs priority high
             Point currentposition = this.donnePosition();
             System.out.println("current position : " + currentposition + ", position départ : " + POSITION_DEPART +" Nb site : " + NBsites); //calcule le numero du joueur
@@ -121,9 +122,6 @@ public class MonJoueur2 extends jeu.Joueur {
             if (NBsites < 2){                //sil il posse moins de deux sites alors il  cherche
                 a = chercherTresor(etatDuJeu, currentposition);
 
-            }
-            if (this.donneSolde()<60){
-                a = chercherPognon(etatDuJeu, currentposition);
             }
 
             else{
