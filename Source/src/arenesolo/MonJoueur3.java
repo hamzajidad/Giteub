@@ -222,20 +222,6 @@ public class MonJoueur3 extends jeu.Joueur {
      *
      * @param plateau
      * @param p
-     * @return ca retourne un boolean pour savoir si le site est important ou pas
-     */
-    public boolean estUnSiteImportant(Plateau plateau, Point p) {
-        int contenu = plateau.donneContenuCellule(p);
-        if (!Plateau.contientUnSite(contenu))
-            return false;
-        int typeSite = Plateau.donneTypeSites(contenu);
-        return typeSite == 2;
-    }
-
-    /**
-     *
-     * @param plateau
-     * @param p
      * @return  ça fait le tri des sites moins importants parmi tous les sites
      */
     public boolean estUnSiteMoinsImportant(Plateau plateau, Point p) {
