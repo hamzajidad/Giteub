@@ -14,7 +14,7 @@ public class MonJoueur3 extends jeu.Joueur {
     /**
      * Description variable ici
      */
-    private static Point POSITION_DEPART
+    private static Point POSITION_DEPART;
     /**
      * Description variable ici
      */
